@@ -1,0 +1,1403 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>말 일기 화면 목업</title>
+<!-- 원본: docs/design/scenarios.md (ux). 시각: tone-and-manner.md A안 「크림 모눈 다이어리」(사용자 확정 전, 추천안).
+     외부 리소스는 Google Fonts만. 사진은 CSS 그라디언트. 예시 문장·숫자는 모두 지어낸 것. 목업 안 버튼은 동작하지 않음(정적). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@700&family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+  /* 레이아웃: 시나리오마다 「설명 → 가로로 넘기는 폰 목업 줄 → 성공/실패」. 목업 내부는 402×874 좌표로 그리고 0.75배로 축소. */
+  :root {
+    color-scheme: light;
+    /* 문서 틀(중립) */
+    --board-bg: #F4F1EC; --board-ink: #2B2926; --board-soft: #5F5A54; --board-rule: #D9D3CA; --board-card: #FFFFFF;
+    /* 주석(앱 화면이 아님을 드러내는 색) — 흰 글자 대비 5.9:1 */
+    --ann: #1A5FD0; --on-ann: #FFFFFF;
+    /* A안 앱 토큰 (tone-and-manner.md 5장 그대로) */
+    --paper: #FBF6EA; --card: #FFFDF7; --ink: #2E2A26; --ink-soft: #655B50; --accent: #B0412C; --on-accent: #FFFDF7;
+    --ink-blue: #2F4A6B; --rule: #E3D8C2; --rule-strong: #8C7D6A; --tape: #E9C9A8; --grid: #EEE5D3; --print: #FFFFFF;
+    --scrim: rgba(46, 42, 38, .45); --shadow: rgba(60, 45, 30, .10); --paper-0: rgba(251, 246, 234, 0);
+    /* 기기·앱 밖 화면 (앱 토큰 아님 — 키보드, 사진 선택기, Drive, 홈 화면) */
+    --os-bg: #FFFFFF; --os-ink: #1C1C1E; --os-soft: #5E5E63; --os-line: #E2E2E6; --os-blue: #0A62CF;
+    --os-kb: #D1D4DA; --os-key: #FFFFFF; --os-key2: #ABB0BA; --os-keysh: #898C92; --os-folder: #6E7480;
+    --os-wall-a: #9FB3C4; --os-wall-b: #D8C8B2; --os-i1: #7C9A7E; --os-i2: #C98F6B; --os-i3: #7E8FB8; --os-i4: #B9A27A; --os-i5: #9C7FA8;
+    /* 서체 */
+    --font-hand: 'Gaegu', 'Nanum Pen Script', cursive;
+    --font-memo: 'Gowun Batang', 'Nanum Myeongjo', 'AppleMyungjo', serif;
+    --font-ui: 'Gowun Dodum', system-ui, -apple-system, 'Apple SD Gothic Neo', sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--board-bg); color: var(--board-ink); font-family: var(--font-ui); font-size: 16px; line-height: 1.6; overflow-x: hidden; word-break: keep-all; overflow-wrap: anywhere; }
+  main { max-width: 640px; margin: 0 auto; padding: 24px 16px 48px; }
+  h1 { font-family: var(--font-memo); font-weight: 700; font-size: 28px; line-height: 1.3; margin: 0 0 8px; text-wrap: balance; }
+  h2 { font-family: var(--font-memo); font-weight: 700; font-size: 22px; line-height: 1.35; margin: 0 0 8px; text-wrap: balance; }
+  h3 { font-family: var(--font-memo); font-weight: 700; font-size: 17px; margin: 24px 0 8px; }
+  p { margin: 0 0 12px; }
+  a { color: var(--ink-blue); }
+  a:focus-visible, .strip:focus-visible, .wide-wrap:focus-visible { outline: 3px solid var(--ann); outline-offset: 2px; border-radius: 4px; }
+  .lede { color: var(--board-soft); font-size: 15px; }
+  .note { font-size: 14px; color: var(--board-soft); line-height: 1.6; }
+  code { font-family: ui-monospace, Menlo, monospace; font-size: .9em; }
+  .pill { display: inline-block; font-family: var(--font-ui); font-weight: 400; font-size: 13px; line-height: 24px; padding: 0 8px; border-radius: 12px; background: var(--board-ink); color: var(--board-card); vertical-align: 3px; margin-right: 8px; }
+  nav.toc ol { list-style: none; margin: 16px 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 12px; }
+  nav.toc a { display: flex; align-items: center; min-height: 44px; font-size: 15px; line-height: 1.35; border-bottom: 1px solid var(--board-rule); text-decoration: none; color: var(--board-ink); }
+  nav.toc a b { font-weight: 400; color: var(--ink-blue); margin-right: 6px; flex: none; }
+  .legend { margin-top: 20px; background: var(--board-card); border: 1px solid var(--board-rule); border-radius: 8px; padding: 12px 16px; font-size: 14px; line-height: 1.6; }
+  .legend div { display: flex; gap: 8px; align-items: center; margin: 4px 0; }
+  .lg-ring { width: 20px; height: 20px; border-radius: 10px; border: 3px solid var(--ann); flex: none; }
+  .lg-num { width: 20px; height: 20px; border-radius: 10px; background: var(--ann); color: var(--on-ann); font-size: 12px; line-height: 20px; text-align: center; flex: none; }
+  section.sc { margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--board-rule); scroll-margin-top: 16px; }
+  .sit { font-size: 15px; line-height: 1.7; }
+  .swipe { font-size: 13px; color: var(--board-soft); margin: 4px 0 0; }
+  .strip { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 8px -16px 0; padding: 8px 16px 12px; scroll-padding: 0 16px; overscroll-behavior-x: contain; }
+  .step { flex: 0 0 302px; margin: 0; scroll-snap-align: start; }
+  .step figcaption { margin-top: 12px; font-size: 15px; line-height: 1.5; }
+  .step .taps { display: block; margin-top: 4px; font-size: 13px; color: var(--board-soft); font-variant-numeric: tabular-nums; }
+  .sub-h { font-family: var(--font-ui); font-size: 15px; color: var(--board-soft); margin: 20px 0 0; }
+  .crit { margin-top: 12px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .crit div { background: var(--board-card); border: 1px solid var(--board-rule); border-radius: 8px; padding: 12px 16px; font-size: 14px; line-height: 1.65; }
+  .crit b { display: block; font-weight: 400; font-size: 13px; color: var(--board-soft); margin-bottom: 2px; }
+  .crit ul { margin: 0; padding-left: 18px; }
+  .qs { list-style: none; padding: 0; margin: 12px 0 0; display: grid; gap: 8px; }
+  .qs li { background: var(--board-card); border: 1px solid var(--board-rule); border-radius: 8px; padding: 12px 16px; font-size: 14px; line-height: 1.65; }
+  .qs li b { font-weight: 400; color: var(--ink-blue); margin-right: 4px; }
+  .qs .q { display: block; font-size: 15px; color: var(--board-ink); }
+  .qs .m { display: block; color: var(--board-soft); margin-top: 4px; }
+
+  /* ===================== 폰 프레임 ===================== */
+  .phone { position: relative; width: 302px; height: 656px; border-radius: 32px; overflow: hidden; background: var(--paper);
+    box-shadow: 0 0 0 1px rgba(43, 41, 38, .2), 0 4px 16px rgba(43, 41, 38, .12); }
+  .screen { position: absolute; top: 0; left: 0; width: 402px; height: 874px; transform: scale(.75); transform-origin: 0 0; overflow: hidden;
+    background-color: var(--paper); color: var(--ink); font-family: var(--font-ui); font-size: 16px; line-height: 1.5;
+    background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 16px 16px; }
+  .screen.os { background: var(--os-bg); color: var(--os-ink); font-family: system-ui, -apple-system, 'Apple SD Gothic Neo', sans-serif; }
+  .screen.wall { background: linear-gradient(160deg, var(--os-wall-a), var(--os-wall-b)); color: var(--os-bg); }
+  .sb { position: absolute; top: 0; left: 0; right: 0; height: 54px; padding: 8px 32px 0; display: flex; align-items: center; justify-content: space-between; font-family: system-ui, -apple-system, sans-serif; font-size: 16px; font-weight: 600; z-index: 20; }
+  .sb .r { display: flex; gap: 6px; align-items: flex-end; }
+  .sb .bar { width: 3px; background: currentColor; border-radius: 1px; }
+  .sb .bat { width: 24px; height: 12px; border: 1.5px solid currentColor; border-radius: 3px; padding: 1px; margin-left: 4px; }
+  .sb .bat::before { content: ""; display: block; height: 100%; width: 70%; background: currentColor; border-radius: 1px; }
+  .hi { position: absolute; bottom: 8px; left: 50%; width: 136px; height: 5px; margin-left: -68px; border-radius: 3px; background: var(--ink); z-index: 30; }
+  .os .hi { background: var(--os-ink); } .wall .hi { background: var(--os-bg); }
+  .ct { position: absolute; top: 54px; left: 0; right: 0; bottom: 0; padding: 0 16px; overflow: hidden; }
+  .i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+  .i.s { width: 20px; height: 20px; }
+  .i.fill { fill: currentColor; }
+
+  /* 앱 공통 */
+  .topbar { display: flex; align-items: center; justify-content: space-between; height: 52px; gap: 8px; }
+  .brand { font-family: var(--font-memo); font-weight: 700; font-size: 18px; }
+  .ibs { display: flex; gap: 4px; align-items: center; }
+  .ib { position: relative; width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border-radius: 22px; color: var(--ink-soft); }
+  .back { position: relative; display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding-right: 8px; color: var(--ink-soft); font-size: 15px; }
+  .tbtn { position: relative; display: inline-flex; align-items: center; min-height: 44px; padding: 0 12px; color: var(--ink-blue); font-size: 16px; }
+  .dock { position: absolute; left: 0; right: 0; bottom: 0; padding: 16px 16px 46px; display: flex; justify-content: center; background: linear-gradient(to top, var(--paper) 70%, var(--paper-0)); z-index: 8; }
+  .write { position: relative; display: inline-flex; align-items: center; gap: 8px; height: 56px; padding: 0 32px; border-radius: 28px; background: var(--accent); color: var(--on-accent); font-size: 18px; box-shadow: 0 2px 8px rgba(60, 45, 30, .2); }
+  .btn { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 22px; font-size: 16px; background: var(--accent); color: var(--on-accent); white-space: nowrap; }
+  .btn.ghost { background: var(--card); color: var(--accent); box-shadow: inset 0 0 0 1.5px var(--accent); }
+  .btn.quiet { background: var(--card); color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--rule-strong); }
+  .btn.blue { background: var(--card); color: var(--ink-blue); box-shadow: inset 0 0 0 1.5px var(--ink-blue); }
+  .btn.full { width: 100%; height: 52px; border-radius: 26px; font-size: 18px; }
+  .rel { position: relative; }
+  .dh { margin: 4px 0 16px; }
+  .dh .d1 { font-family: var(--font-memo); font-size: 22px; line-height: 1.4; }
+  .dh .d2 { font-size: 15px; color: var(--ink-soft); }
+  .lbl { font-size: 13px; color: var(--ink-soft); }
+  .sec { font-family: var(--font-memo); font-weight: 700; font-size: 17px; margin: 24px 0 8px; display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0 8px; }
+  .rel > .sec { padding-right: 24px; }
+  .sec small { font-family: var(--font-ui); font-weight: 400; font-size: 13px; color: var(--ink-soft); }
+  .slip { position: relative; background: var(--card); padding: 12px 16px; border-left: 4px solid var(--accent); border-radius: 2px; box-shadow: 0 1px 0 rgba(60, 45, 30, .06), 0 2px 8px var(--shadow); }
+  .slip.row1 { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .slip p { margin: 0; font-size: 15px; line-height: 1.55; }
+  .slip .acts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .slip.calm { border-left-color: var(--ink-blue); }
+  .card { position: relative; background: var(--card); color: var(--ink); padding: 24px 16px 16px; border-radius: 2px; box-shadow: 0 1px 0 rgba(60, 45, 30, .06), 0 2px 8px var(--shadow); }
+  .card.tight { padding: 16px; }
+  .tape { position: absolute; top: -10px; left: 50%; width: 88px; height: 22px; transform: translateX(-50%) rotate(-2deg); background: var(--tape); opacity: .78;
+    clip-path: polygon(0 8%, 4% 0, 96% 4%, 100% 0, 98% 50%, 100% 100%, 3% 96%, 0 100%, 2% 50%); }
+  .card-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+  .stamp { font-size: 13px; letter-spacing: .04em; color: var(--accent); border: 1.5px solid var(--accent); border-radius: 4px; padding: 0 8px; transform: rotate(-2deg); display: inline-block; line-height: 24px; white-space: nowrap; }
+  .stamp.unk { color: var(--ink-soft); border-color: var(--rule-strong); border-style: dashed; transform: none; }
+  .age { font-size: 13px; color: var(--ink-soft); }
+  .quote { font-family: var(--font-hand); font-weight: 700; font-size: 30px; line-height: 1.3; margin: 12px 0 8px; letter-spacing: -0.02em; word-spacing: -0.12em; }
+  .quote.big { font-size: 32px; }
+  .quote .open { color: var(--accent); margin-right: 2px; }
+  .memo { font-family: var(--font-memo); font-size: 15px; line-height: 1.7; color: var(--ink-soft); margin: 0 0 8px; }
+  .tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tag { font-size: 13px; color: var(--ink-blue); border-bottom: 1px dashed var(--ink-blue); line-height: 24px; }
+  .cat { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; color: var(--ink-soft); }
+  .rows { background: var(--card); padding: 0 16px; border-radius: 2px; box-shadow: 0 1px 0 rgba(60, 45, 30, .06), 0 2px 8px var(--shadow); }
+  .row { position: relative; display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 8px 0; border-top: 1px solid var(--rule); color: var(--ink); }
+  .row:first-child { border-top: 0; }
+  .row .main { flex: 1; min-width: 0; }
+  .row > .i { color: var(--ink-soft); }
+  .hq { font-family: var(--font-hand); font-weight: 700; font-size: 24px; line-height: 1.25; letter-spacing: -0.02em; word-spacing: -0.12em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hq mark { background: var(--tape); color: var(--ink); padding: 0 2px; }
+  .sub { font-size: 13px; color: var(--ink-soft); }
+  .sub mark { background: var(--tape); color: var(--ink); }
+  .rd { font-size: 13px; color: var(--ink-soft); width: 56px; flex: none; font-variant-numeric: tabular-nums; }
+  .sentence { font-family: var(--font-memo); font-size: 16px; line-height: 1.7; margin: 8px 0 0; }
+  .lnk { position: relative; display: inline-flex; align-items: center; min-height: 44px; color: var(--ink-blue); text-decoration: underline; text-decoration-style: dashed; text-underline-offset: 4px; }
+  .prints { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 16px; }
+  .print { position: relative; background: var(--print); padding: 6px 6px 8px; box-shadow: 0 1px 3px rgba(60, 45, 30, .18); transform: rotate(-1.5deg); }
+  .print:nth-child(even) { transform: rotate(1.2deg); }
+  .print .img { width: 100%; aspect-ratio: 1; }
+  .print .cq { font-family: var(--font-hand); font-weight: 700; font-size: 24px; line-height: 1.2; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: -0.02em; word-spacing: -0.12em; }
+  .print.sm { width: 160px; }
+  .img { display: block; border-radius: 1px; }
+  .img.park { background: radial-gradient(18px 18px at 78% 22%, #F7D27A 98%, transparent 100%), radial-gradient(120% 60% at 30% 110%, #8DAA6C 60%, transparent 61%), linear-gradient(#BFD9E8, #E8F0EA); }
+  .img.sand { background: radial-gradient(10px 7px at 35% 60%, #A98C63 90%, transparent 100%), radial-gradient(10px 7px at 55% 52%, #A98C63 90%, transparent 100%), radial-gradient(10px 7px at 70% 66%, #A98C63 90%, transparent 100%), linear-gradient(#E9D6B4, #D9C29B); }
+  .img.rain { background: repeating-linear-gradient(100deg, rgba(255, 255, 255, .35) 0 2px, transparent 2px 14px), linear-gradient(#8FA3B3, #C9D3D9); }
+  .img.train { background: radial-gradient(7px 7px at 32% 72%, #3A3A3A 95%, transparent 100%), radial-gradient(7px 7px at 62% 72%, #3A3A3A 95%, transparent 100%), linear-gradient(#B85C4A, #B85C4A) 50% 62% / 60% 18% no-repeat, linear-gradient(#CFE3EE 0 66%, #9BB07A 66%); }
+  .img.book { background: linear-gradient(90deg, #6B8CAE 0 48%, #F0E6D2 48% 52%, #C9785E 52%); }
+  .img.cake { background: radial-gradient(circle at 50% 62%, #F3E3C8 28%, transparent 29%), linear-gradient(#E8D2D0, #F5EDE6); }
+  .ph-empty { width: 100%; aspect-ratio: 1; border: 2px dashed var(--rule-strong); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: var(--ink-soft); font-size: 13px; text-align: center; padding: 8px; background: var(--card); }
+  .toast { position: absolute; left: 16px; right: 16px; bottom: 124px; z-index: 9; background: var(--card); box-shadow: 0 2px 12px rgba(60, 45, 30, .2); padding: 12px 16px; display: flex; align-items: center; gap: 12px; font-size: 15px; line-height: 1.5; border-radius: 2px; }
+  .toast.top { bottom: auto; top: 120px; }
+  .toc-l { list-style: none; margin: 0; padding: 0 16px; background: var(--card); box-shadow: 0 1px 4px var(--shadow); border-radius: 2px; }
+  .toc-l li { position: relative; display: flex; align-items: center; gap: 8px; min-height: 48px; border-top: 1px solid var(--rule); font-size: 15px; }
+  .toc-l li:first-child { border-top: 0; }
+  .toc-l .m { font-family: var(--font-memo); font-size: 17px; }
+  .toc-l .a { color: var(--ink-soft); font-size: 13px; }
+  .toc-l .dots { flex: 1; border-bottom: 1px dotted var(--rule-strong); transform: translateY(-4px); }
+  .toc-l .n2 { color: var(--ink-soft); font-size: 13px; font-variant-numeric: tabular-nums; }
+  .chips { display: flex; gap: 8px; flex-wrap: nowrap; overflow: hidden; margin-top: 8px; }
+  .chips.wrap { flex-wrap: wrap; }
+  .chip { position: relative; flex: none; display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding: 0 16px; border-radius: 22px; box-shadow: inset 0 0 0 1.5px var(--rule-strong); font-size: 15px; color: var(--ink); background: var(--card); }
+  .chip.on { background: var(--ink-blue); color: var(--card); box-shadow: none; padding-left: 12px; }
+  .seg { display: flex; background: var(--paper); border-radius: 22px; padding: 4px; box-shadow: inset 0 0 0 1.5px var(--rule-strong); }
+  .seg span { position: relative; flex: 1; min-height: 40px; display: flex; align-items: center; justify-content: center; gap: 4px; border-radius: 20px; font-size: 16px; color: var(--ink); }
+  .seg .on { background: var(--ink); color: var(--card); }
+  /* 바텀시트 · 키보드 */
+  .scrim { position: absolute; inset: 0; background: var(--scrim); z-index: 10; }
+  .sheet { position: absolute; left: 0; right: 0; top: 96px; bottom: 0; background: var(--card); border-radius: 16px 16px 0 0; padding: 8px 16px 46px; z-index: 11; display: flex; flex-direction: column; box-shadow: 0 -2px 12px rgba(60, 45, 30, .15); }
+  .sheet.kbup { bottom: 300px; padding-bottom: 8px; border-radius: 16px 16px 0 0; }
+  .sheet.lo { top: 300px; }
+  .grab { width: 40px; height: 5px; border-radius: 3px; background: var(--rule-strong); margin: 0 auto 8px; flex: none; }
+  .fdate { position: relative; display: flex; align-items: center; gap: 8px; min-height: 44px; font-family: var(--font-memo); font-size: 17px; align-self: flex-start; }
+  .fdate .i { color: var(--ink-soft); }
+  .fld { margin-top: 8px; }
+  .fld .ln { border-bottom: 1.5px solid var(--rule-strong); min-height: 44px; padding: 4px 0; }
+  .fq .ln { font-family: var(--font-hand); font-weight: 700; font-size: 26px; line-height: 1.35; min-height: 80px; letter-spacing: -0.02em; word-spacing: -0.12em; }
+  .fm .ln { font-family: var(--font-memo); font-size: 15px; line-height: 1.7; }
+  .ph { font-family: var(--font-ui); font-weight: 400; font-size: 16px; color: var(--ink-soft); letter-spacing: 0; word-spacing: 0; }
+  .fm .ph { font-size: 15px; }
+  .caret { display: inline-block; width: 2px; height: 1.1em; background: var(--accent); vertical-align: -.15em; margin-left: 2px; }
+  .more { position: relative; display: inline-flex; align-items: center; gap: 4px; min-height: 44px; color: var(--ink-soft); font-size: 15px; }
+  .acts-bar { margin-top: auto; display: flex; gap: 12px; align-items: center; padding-top: 8px; }
+  .ibo { position: relative; width: 52px; height: 52px; border-radius: 26px; box-shadow: inset 0 0 0 1.5px var(--rule-strong); color: var(--ink-soft); display: flex; align-items: center; justify-content: center; flex: none; background: var(--card); }
+  .save { position: relative; flex: 1; height: 52px; border-radius: 26px; background: var(--accent); color: var(--on-accent); font-size: 18px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .save.busy { background: var(--card); color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--rule-strong); }
+  .kb { position: absolute; left: 0; right: 0; bottom: 0; height: 300px; background: var(--os-kb); z-index: 12; padding: 4px 4px 0; font-family: system-ui, -apple-system, sans-serif; color: var(--os-ink); }
+  .kb .sug { height: 40px; display: flex; justify-content: space-around; align-items: center; font-size: 15px; }
+  .kb .kr { display: flex; justify-content: center; gap: 6px; margin-top: 10px; }
+  .kb .k { width: 34px; height: 42px; background: var(--os-key); border-radius: 5px; box-shadow: 0 1px 0 var(--os-keysh); display: flex; align-items: center; justify-content: center; font-size: 20px; }
+  .kb .k.w { width: 44px; background: var(--os-key2); font-size: 15px; }
+  .kb .k.sp { flex: 1; max-width: 190px; font-size: 15px; }
+  .kb .k.ret { width: 88px; background: var(--os-key2); font-size: 15px; }
+  .dlg-wrap { position: absolute; inset: 0; background: var(--scrim); display: flex; align-items: center; justify-content: center; padding: 0 32px; z-index: 15; }
+  .dlg { background: var(--card); border-radius: 12px; padding: 24px 20px 16px; box-shadow: 0 4px 24px rgba(0, 0, 0, .2); }
+  .dlg p { margin: 0 0 16px; font-size: 16px; line-height: 1.6; }
+  .dlg .acts { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+  .cal { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 15px; margin-top: 8px; }
+  .cal span { position: relative; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 22px; }
+  .cal .h { height: 28px; font-size: 13px; color: var(--ink-soft); }
+  .cal .today { box-shadow: inset 0 0 0 1.5px var(--rule-strong); }
+  .cal .sel { background: var(--accent); color: var(--on-accent); }
+  .cal .fut { color: var(--ink-soft); }
+  .mgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 8px; }
+  .mgrid span { position: relative; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 24px; font-size: 16px; box-shadow: inset 0 0 0 1px var(--rule); }
+  .mgrid .sel { background: var(--accent); color: var(--on-accent); box-shadow: none; }
+  .mgrid .fut { color: var(--ink-soft); }
+  .prog { height: 6px; border-radius: 3px; background: var(--rule); overflow: hidden; margin-top: 6px; }
+  .prog i { display: block; height: 100%; background: var(--ink-blue); }
+  .badge { position: absolute; left: 12px; right: 12px; bottom: 44px; background: var(--card); font-size: 13px; padding: 2px 6px; text-align: center; border-radius: 2px; color: var(--ink); }
+  .search { position: relative; flex: 1; display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 12px; border-radius: 22px; background: var(--card); box-shadow: inset 0 0 0 1.5px var(--rule-strong); font-size: 16px; color: var(--ink-soft); }
+  .search .v { color: var(--ink); flex: 1; }
+  .pager { display: flex; justify-content: space-between; gap: 8px; margin-top: 16px; }
+  .pager span { position: relative; display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding: 0 8px; color: var(--ink-blue); font-size: 16px; }
+  .chap { font-family: var(--font-memo); font-weight: 700; font-size: 30px; line-height: 1.3; }
+  .grp { font-family: var(--font-memo); font-size: 16px; margin: 20px 0 8px; display: flex; gap: 8px; align-items: center; }
+  .grp::after { content: ""; flex: 1; border-bottom: 1px solid var(--rule); }
+  .ent { background: var(--card); padding: 12px 16px; box-shadow: 0 1px 4px var(--shadow); border-radius: 2px; margin-bottom: 12px; position: relative; }
+  .ent .quote { font-size: 26px; margin: 0 0 4px; }
+  .ent .memo { margin: 0; font-size: 14px; }
+  .setl .row { min-height: 52px; font-size: 16px; }
+  /* 앱 밖: 홈 화면 · 사진 선택기 · Drive · 문서 · 로그인 */
+  .home-grid { position: absolute; top: 96px; left: 24px; right: 24px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px 16px; text-align: center; font-size: 12px; font-family: system-ui, -apple-system, sans-serif; }
+  .app { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .app i { display: block; width: 64px; height: 64px; border-radius: 15px; }
+  .app .md { background: var(--paper); color: var(--accent); font-family: var(--font-hand); font-weight: 700; font-style: normal; font-size: 34px; line-height: 64px; box-shadow: inset 0 0 0 1px var(--rule); }
+  .app .qk { background: var(--accent); color: var(--on-accent); display: flex; align-items: center; justify-content: center; outline: 2px dashed var(--os-bg); outline-offset: 3px; }
+  .pick-h { display: flex; justify-content: space-between; align-items: center; height: 52px; padding: 0 16px; font-size: 17px; }
+  .pick-h .b { color: var(--os-blue); min-height: 44px; display: flex; align-items: center; position: relative; padding: 0 4px; }
+  .pgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+  .pgrid > span { position: relative; aspect-ratio: 1; display: block; }
+  .pgrid .ck { position: absolute; right: 6px; bottom: 6px; width: 26px; height: 26px; border-radius: 13px; background: var(--os-blue); color: var(--os-bg); border: 2px solid var(--os-bg); font-size: 13px; display: flex; align-items: center; justify-content: center; }
+  .drive-h { padding: 8px 16px 12px; border-bottom: 1px solid var(--os-line); }
+  .drive-h .path { font-size: 13px; color: var(--os-soft); }
+  .drive-h .t { font-size: 22px; margin-top: 2px; }
+  .dl { list-style: none; margin: 0; padding: 0; }
+  .dl li { position: relative; display: flex; align-items: center; gap: 12px; min-height: 60px; padding: 8px 16px; border-bottom: 1px solid var(--os-line); font-size: 16px; }
+  .dl .ico { width: 40px; height: 40px; flex: none; display: flex; align-items: center; justify-content: center; color: var(--os-folder); border-radius: 4px; }
+  .dl .thumb { width: 40px; height: 40px; flex: none; border-radius: 4px; }
+  .dl .nm { flex: 1; min-width: 0; }
+  .dl .nm small { display: block; font-size: 13px; color: var(--os-soft); }
+  .doc { position: absolute; top: 124px; left: 16px; right: 16px; bottom: 0; background: var(--os-bg); box-shadow: 0 0 0 1px var(--os-line); padding: 24px 20px; font-family: var(--font-memo); font-size: 14px; line-height: 1.6; color: var(--os-ink); }
+  .doc h4 { margin: 0 0 8px; font-size: 20px; }
+  .doc .nt { background: var(--paper); padding: 8px 12px; font-family: var(--font-ui); font-size: 13px; margin-bottom: 16px; color: var(--os-ink); }
+  .doc .it { display: flex; gap: 12px; padding: 12px 0; border-top: 1px solid var(--os-line); }
+  .doc .it .thumb { width: 64px; height: 64px; flex: none; }
+  .doc .fn { font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: var(--os-soft); }
+  .doc .w { font-family: var(--font-hand); font-weight: 700; font-size: 20px; line-height: 1.25; }
+  .doc .flag { font-family: var(--font-ui); font-size: 12px; color: var(--accent); }
+  /* 주석 */
+  .n { position: absolute; top: -10px; right: -6px; width: 28px; height: 28px; border-radius: 14px; background: var(--ann); color: var(--on-ann); font: 15px/28px system-ui, sans-serif; text-align: center; z-index: 25; box-shadow: 0 0 0 2px var(--board-card); }
+  .n.l { right: auto; left: -26px; top: 0; }
+  .tap::after { content: ""; position: absolute; inset: -6px; border-radius: 999px; border: 3px solid var(--ann); pointer-events: none; z-index: 26; }
+  .tap.sq::after { border-radius: 8px; inset: -4px; }
+  .annl.mid { top: 14px; left: 50%; transform: translateX(-50%); white-space: nowrap; }
+  .annl { position: absolute; z-index: 27; background: var(--ann); color: var(--on-ann); font: 13px/1.4 system-ui, sans-serif; padding: 4px 8px; border-radius: 4px; max-width: 300px; }
+  /* 넓은 화면 */
+  .wide-wrap { overflow-x: auto; margin: 8px -16px 0; padding: 8px 16px 12px; }
+  .laptop { position: relative; width: 614px; height: 384px; border-radius: 8px; overflow: hidden; box-shadow: 0 0 0 1px rgba(43, 41, 38, .2), 0 4px 16px rgba(43, 41, 38, .12); }
+  .wscreen { position: absolute; top: 0; left: 0; width: 1024px; height: 640px; transform: scale(.6); transform-origin: 0 0; overflow: hidden; background-color: var(--paper); color: var(--ink);
+    background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 16px 16px; font-family: var(--font-ui); }
+  .wbar { height: 64px; display: flex; align-items: center; gap: 16px; padding: 0 32px; border-bottom: 1px solid var(--rule); background: var(--paper); }
+  .spread { position: absolute; top: 88px; left: 32px; right: 88px; bottom: 24px; display: grid; grid-template-columns: 1fr 1fr; background: var(--card); box-shadow: 0 2px 12px var(--shadow); }
+  .spread .pg { padding: 24px 28px; overflow: hidden; min-width: 0; }
+  .spread .pg + .pg { border-left: 1px solid var(--rule); box-shadow: inset 12px 0 16px -12px rgba(60, 45, 30, .18); }
+  .itabs { position: absolute; top: 112px; right: 40px; display: flex; flex-direction: column; gap: 4px; }
+  .itabs span { position: relative; width: 48px; min-height: 44px; display: flex; align-items: center; justify-content: center; background: var(--card); box-shadow: 1px 1px 4px var(--shadow); font-family: var(--font-memo); font-size: 15px; border-radius: 0 6px 6px 0; }
+  .itabs .on { background: var(--accent); color: var(--on-accent); }
+  @media (prefers-reduced-motion: no-preference) { .strip, .wide-wrap { scroll-behavior: smooth; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></symbol>
+  <symbol id="i-set" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></symbol>
+  <symbol id="i-pen" viewBox="0 0 24 24"><path d="M4 20l1-4L16 5l3 3L8 19z"/><path d="M14 7l3 3"/></symbol>
+  <symbol id="i-cam" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7l2-3h4l2 3"/><circle cx="12" cy="13.5" r="3.5"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8L3.5 9.7l5.9-.9z"/></symbol>
+  <symbol id="i-l" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="i-r" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+  <symbol id="i-d" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></symbol>
+  <symbol id="i-retry" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v4h-4"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7a1 1 0 0 1 1-1h5l2 2h9a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/></symbol>
+  <symbol id="i-doc" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></symbol>
+  <symbol id="i-table" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="1"/><path d="M4 10h16M4 15h16M10 4v16"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-off" viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 0 0 .6-8A6 6 0 0 0 6.3 9.2 4.5 4.5 0 0 0 7 18z"/><path d="M4 4l16 16"/></symbol>
+  <symbol id="i-pocket" viewBox="0 0 24 24"><path d="M4 5h16v6a8 8 0 0 1-16 0z"/><path d="M8 10l4 3 4-3"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="12" r="4"/><path d="M12 12h9M18 12v3M21 12v2"/></symbol>
+</svg>
+<main>
+<header>
+  <h1>말 일기 화면 목업</h1>
+  <p class="lede">사용 시나리오(<code>scenarios.md</code>)를 실제 폰 화면처럼 그려 한 장에 모았어요. 시나리오마다 화면을 옆으로 밀어 단계별로 넘겨 보세요.</p>
+  <p class="note">시각 방향은 A안 「크림 모눈 다이어리」(추천안, 아직 확정 전)입니다. 예시 문장·숫자·사진은 모두 지어낸 것이고 목업 안 버튼은 눌러도 동작하지 않아요. 탭 수와 시간은 시나리오 문서의 추정치예요.</p>
+  <nav class="toc" aria-label="시나리오 목차">
+    <ol>
+      <li><a href="#v1"><b>V-1</b>대시보드 첫 장</a></li>
+      <li><a href="#r1"><b>R-1</b>들은 즉시 적기</a></li>
+      <li><a href="#r3"><b>R-3</b>저녁에 채우기</a></li>
+      <li><a href="#r4"><b>R-4</b>사진 붙이기</a></li>
+      <li><a href="#r6"><b>R-6</b>날짜 보충 · 뒤쪽 주머니</a></li>
+      <li><a href="#v2"><b>V-2</b>일기장 넘겨 보기</a></li>
+      <li><a href="#v3"><b>V-3</b>찾기</a></li>
+      <li><a href="#v4"><b>V-4</b>한 장 자세히 보기</a></li>
+      <li><a href="#v6"><b>V-6</b>연말 포토북 준비</a></li>
+      <li><a href="#fail"><b>공통</b>실패·예외</a></li>
+      <li><a href="#wide"><b>3.4</b>넓은 화면 펼침면</a></li>
+      <li><a href="#questions"><b>8.1</b>열린 질문</a></li>
+    </ol>
+  </nav>
+  <div class="legend" aria-label="목업 읽는 법">
+    <div><span class="lg-ring" aria-hidden="true"></span>파란 고리: 이 단계에서 누르는 곳</div>
+    <div><span class="lg-num" aria-hidden="true">3</span>파란 번호: 대시보드 묶음 번호(⓪~⑨). 설명용 표시이고 앱에는 없어요</div>
+  </div>
+</header>
+
+<!-- ======================= V-1 ======================= -->
+<section class="sc" id="v1" aria-labelledby="v1-h">
+  <h2 id="v1-h"><span class="pill">V-1</span>대시보드 첫 장 — 일기장의 첫 펼침면</h2>
+  <p class="sit">일요일 오후 낮잠 시간, 요즘 모은 말을 보고 싶을 때. 앱을 열면 숫자 판이 아니라 일기장 첫 장이 펼쳐지고, 스크롤만 하면 ⓪~⑨ 묶음이 순서대로 이어져요. 말 하나를 누르면 그 장, 「10월 장 펼치기」를 누르면 그 달로 가요.</p>
+  <p class="swipe" aria-hidden="true">옆으로 밀어 보세요 →</p>
+  <div class="strip" tabindex="0" role="region" aria-label="V-1 목업 5장, 옆으로 넘겨 보기">
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct">
+          <div class="topbar"><span class="brand">말 일기</span><span class="ibs"><span class="ib"><svg class="i"><use href="#i-search"/></svg></span><span class="ib"><svg class="i"><use href="#i-set"/></svg></span></span></div>
+          <div class="slip row1"><span class="n">0</span><p>아직 옮기지 못한 말 1개</p><span class="btn ghost"><svg class="i s"><use href="#i-retry"/></svg>다시 옮기기</span></div>
+          <div class="dh rel" style="margin-top:16px"><span class="n">1</span><div class="d1">2026년 10월 13일 화요일</div><div class="d2">아이 · 2세 7개월</div></div>
+          <article class="card"><span class="tape" aria-hidden="true"></span><span class="n">2</span>
+            <div class="card-head"><span class="stamp">2026. 10. 13 화</span><span class="age">가장 최근의 말 · 2세 7개월</span></div>
+            <p class="quote big"><span class="open">“</span>Can I do it again?</p>
+            <p class="memo">미끄럼틀을 세 번째 내려오고 나서.</p>
+          </article>
+          <div class="rel"><span class="n">3</span>
+            <h3 class="sec">오늘 채울 것 <small>오늘 적은 말 2개 — 상황이 비어 있어요</small></h3>
+            <div class="rows">
+              <div class="row"><div class="main"><div class="hq">Can I do it again?</div><div class="sub">상황이 비어 있어요</div></div><svg class="i"><use href="#i-r"/></svg></div>
+              <div class="row"><div class="main"><div class="hq">엄마 이거 봐!</div><div class="sub">상황 · 카테고리가 비어 있어요</div></div><svg class="i"><use href="#i-r"/></svg></div>
+            </div>
+          </div>
+        </div>
+        <div class="dock"><span class="write"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
+      </div></div>
+      <figcaption>1. 앱을 연 첫 화면 — <b>옮기지 못한 말이 있을 때</b>. 맨 위 쪽지(⓪)가 다른 무엇보다 먼저 보여요.<span class="taps">탭 1 (아이콘) · 약 3초</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct">
+          <div class="topbar"><span class="brand">말 일기</span><span class="ibs"><span class="ib"><svg class="i"><use href="#i-search"/></svg></span><span class="ib"><svg class="i"><use href="#i-set"/></svg></span></span></div>
+          <div class="dh rel"><span class="n">1</span><div class="d1">2026년 10월 13일 화요일</div><div class="d2">아이 · 2세 7개월</div></div>
+          <article class="card"><span class="tape" aria-hidden="true"></span><span class="n">2</span>
+            <div class="card-head"><span class="stamp">2026. 10. 13 화</span><span class="age">가장 최근의 말 · 2세 7개월</span></div>
+            <p class="quote big"><span class="open">“</span>Can I do it again?</p>
+            <p class="memo">미끄럼틀을 세 번째 내려오고 나서.</p>
+          </article>
+          <div class="rel"><span class="n">3</span>
+            <h3 class="sec">오늘 채울 것 <small>오늘 적은 말 2개 — 상황이 비어 있어요</small></h3>
+            <div class="rows">
+              <div class="row"><div class="main"><div class="hq">Can I do it again?</div><div class="sub">상황이 비어 있어요</div></div><svg class="i"><use href="#i-r"/></svg></div>
+              <div class="row"><div class="main"><div class="hq">엄마 이거 봐!</div><div class="sub">상황 · 카테고리가 비어 있어요</div></div><svg class="i"><use href="#i-r"/></svg></div>
+            </div>
+          </div>
+        </div>
+        <div class="dock"><span class="write"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
+      </div></div>
+      <figcaption>2. 같은 첫 화면 — <b>옮기지 못한 말이 없을 때</b>. ⓪은 아예 그리지 않고 날짜 머리글(①)부터 시작해요.<span class="taps">탭 1 · 약 3초</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct">
+          <div class="rel" style="margin-top:8px"><span class="n">4</span>
+            <h3 class="sec" style="margin-top:8px">10월 <small>2세 7개월 · 이번 달의 말</small></h3>
+            <div class="rows">
+              <div class="row"><span class="rd">10. 13 화</span><div class="main"><div class="hq">Can I do it again?</div></div></div>
+              <div class="row"><span class="rd">10. 12 월</span><div class="main"><div class="hq">Look, 비 와요</div></div></div>
+              <div class="row"><span class="rd">10. 11 일</span><div class="main"><div class="hq">아빠 train 타고 가요?</div></div></div>
+              <div class="row"><span class="rd">10. 05 월</span><div class="main"><div class="hq">엄마 이거 봐! dinosaur 발자국이야</div></div></div>
+            </div>
+            <p class="sentence">10월에는 말 7개를 적었어요 · <span class="lnk">10월 장 펼치기</span></p>
+          </div>
+          <div class="rel"><span class="n">5</span>
+            <h3 class="sec">사진이 있는 순간</h3>
+            <div class="prints">
+              <div class="print"><span class="img sand"></span><div class="cq">dinosaur 발자국이야</div></div>
+              <div class="print"><span class="img park"></span><div class="cq">Can I do it again?</div></div>
+              <div class="print"><span class="img rain"></span><div class="cq">Look, 비 와요</div></div>
+              <div class="print"><span class="img train"></span><div class="cq">train 타고 가요?</div></div>
+            </div>
+          </div>
+        </div>
+        <span class="annl mid">스크롤 ↓ 두 번째 화면</span>
+        <div class="dock"><span class="write"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
+      </div></div>
+      <figcaption>3. 내려가면 이번 달의 말(④)과 사진이 있는 순간(⑤). 숫자는 「말 7개를 적었어요」처럼 문장 속에만 있어요.<span class="taps">스크롤만 · 탭 0</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct">
+          <div class="rel" style="margin-top:8px"><span class="n">6</span>
+            <h3 class="sec" style="margin-top:8px">예전 이맘때</h3>
+            <article class="card tight">
+              <div class="card-head"><span class="stamp">2026. 09. 13 일</span><span class="age">한 달 전 이맘때 · 2세 6개월</span></div>
+              <p class="quote" style="font-size:28px">No no, 내가 할래</p>
+              <p class="memo">신발을 혼자 신겠다고.</p>
+            </article>
+          </div>
+          <div class="rel"><span class="n">7</span>
+            <h3 class="sec">요즘 빠져 있는 것</h3>
+            <div class="chips wrap" style="margin-top:0"><span class="lnk" style="margin-right:12px">#공룡</span><span class="lnk" style="margin-right:12px">#기차</span><span class="lnk">#그림책</span></div>
+          </div>
+          <div class="rel"><span class="n">8</span>
+            <h3 class="sec">책갈피 · 뒤쪽 주머니</h3>
+            <div class="rows">
+              <div class="row"><svg class="i" style="color:var(--accent)"><use href="#i-star"/></svg><div class="main">책갈피 꽂은 말 5개</div><svg class="i"><use href="#i-r"/></svg></div>
+              <div class="row"><svg class="i"><use href="#i-pocket"/></svg><div class="main">날짜를 모르는 말 8개<div class="sub">뒤쪽 주머니 — 날짜를 채울 수 있어요</div></div><svg class="i"><use href="#i-r"/></svg></div>
+            </div>
+          </div>
+        </div>
+        <span class="annl mid">스크롤 ↓ 세 번째 화면</span>
+        <div class="dock"><span class="write"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
+      </div></div>
+      <figcaption>4. 예전 이맘때(⑥), 요즘 빠져 있는 것(⑦), 책갈피와 뒤쪽 주머니(⑧). 0개인 줄은 그리지 않아요. 1년 전 기록이 아직 없어서 ⑥은 「한 달 전 이맘때」(Q5).<span class="taps">스크롤만 · 탭 0</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct">
+          <div class="rel" style="margin-top:8px"><span class="n">9</span>
+            <h3 class="sec" style="margin-top:8px">목차</h3>
+            <ol class="toc-l">
+              <li><span class="m">10월</span><span class="a">2세 7개월</span><span class="dots"></span><span class="n2">7</span></li>
+              <li><span class="m">9월</span><span class="a">2세 6개월</span><span class="dots"></span><span class="n2">12</span></li>
+              <li><span class="m">8월</span><span class="a">2세 5개월</span><span class="dots"></span><span class="n2">6</span></li>
+              <li><span class="m">7월</span><span class="a">2세 4개월</span><span class="dots"></span><span class="n2">3</span></li>
+              <li><span class="m">뒤쪽 주머니</span><span class="a">날짜 모름</span><span class="dots"></span><span class="n2">8</span></li>
+            </ol>
+            <h3 class="sec">카테고리로 보기</h3>
+            <div class="chips wrap" style="margin-top:0">
+              <span class="chip">엄마에게 해준 말</span><span class="chip">놀이하며 만든 말</span><span class="chip">좋아하는 것들</span><span class="chip">일상 문장과 감정 표현</span><span class="chip">노래, 책, 그리고 에피소드</span>
+            </div>
+          </div>
+        </div>
+        <span class="annl mid">스크롤 ↓ 맨 아래</span>
+        <div class="dock"><span class="write"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
+      </div></div>
+      <figcaption>5. 목차(⑨) — 달과 나이, 줄 끝 작은 수 하나. 카테고리는 그래프 대신 목차 탭처럼(시트에서 읽어 그리는 목록).<span class="taps">탭 1 → 그 달 장 (V-2)</span></figcaption>
+    </figure>
+  </div>
+  <div class="crit">
+    <div><b>성공 기준</b>스크롤 없이 아이의 말이 최소 한 문장 크게 보이고, 숫자는 문장 속에만 있어요. 빈 묶음은 그리지 않아요. 「적기」는 어느 위치에서나 하단 엄지 자리에 있어요.</div>
+    <div><b>이렇게 되면</b>기록이 0개면 ②가 「아직 적은 말이 없어요. 오늘 들은 말부터 적어 볼까요?」로, 이번 달이 비면 ④가 「10월은 아직 비어 있어요」 + 지난달 장 링크로 바뀌어요. streak·「며칠째 안 썼어요」·파이 차트는 넣지 않아요.</div>
+  </div>
+</section>
+
+<!-- ======================= R-1 ======================= -->
+<section class="sc" id="r1" aria-labelledby="r1-h">
+  <h2 id="r1-h"><span class="pill">R-1</span>들은 즉시 적기 (놀이터)</h2>
+  <p class="sit">미끄럼틀을 다 탄 아이가 처음으로 완전한 문장 「Can I do it again?」을 물어요. 엄마 한 손엔 물병. 들은 그대로, 오늘 날짜로 남기고 상황·카테고리는 저녁에 채워요. 가장 중요한 흐름이에요.</p>
+  <p class="swipe" aria-hidden="true">옆으로 밀어 보세요 →</p>
+  <div class="strip" tabindex="0" role="region" aria-label="R-1 목업 5장, 옆으로 넘겨 보기">
+    <figure class="step">
+      <div class="phone"><div class="screen wall">
+        <div class="home-grid">
+          <span class="app"><i style="background:var(--os-i1)"></i>사진</span>
+          <span class="app"><i style="background:var(--os-i2)"></i>카메라</span>
+          <span class="app"><i style="background:var(--os-i3)"></i>메모</span>
+          <span class="app"><i style="background:var(--os-i4)"></i>지도</span>
+          <span class="app"><i style="background:var(--os-i5)"></i>날씨</span>
+          <span class="app tap sq"><i class="md">말</i>말 일기</span>
+          <span class="app"><i class="qk"><svg class="i" style="width:32px;height:32px"><use href="#i-pen"/></svg></i>바로 적기</span>
+          <span class="app"><i style="background:var(--os-i1)"></i>음악</span>
+        </div>
+        <span class="annl" style="top:420px;left:24px;right:24px">점선 아이콘 「바로 적기」는 제안 C-3(Q2). 이것으로 열면 바로 빠른 기록, 탭 2번</span>
+      </div></div>
+      <figcaption>1. 홈 화면의 「말 일기」 아이콘 탭<span class="taps">탭 1 · 누적 1 · 0초</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct">
+          <div class="topbar"><span class="brand">말 일기</span><span class="ibs"><span class="ib"><svg class="i"><use href="#i-search"/></svg></span><span class="ib"><svg class="i"><use href="#i-set"/></svg></span></span></div>
+          <div class="dh"><div class="d1">2026년 10월 13일 화요일</div><div class="d2">아이 · 2세 7개월</div></div>
+          <article class="card"><span class="tape" aria-hidden="true"></span>
+            <div class="card-head"><span class="stamp">2026. 10. 12 월</span><span class="age">가장 최근의 말 · 2세 7개월</span></div>
+            <p class="quote big"><span class="open">“</span>Look, 비 와요</p>
+            <p class="memo">창문에 붙어 서서, 우산 꺼내 달라며.</p>
+          </article>
+        </div>
+        <div class="dock"><span class="write tap"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
+      </div></div>
+      <figcaption>2. 대시보드가 열리면 하단 엄지 자리의 「적기」 탭<span class="taps">탭 1 · 누적 2 · 약 3초 (첫 로딩)</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct"><div class="dh" style="margin-top:56px"><div class="d1">2026년 10월 13일 화요일</div></div></div>
+        <div class="scrim"></div>
+        <div class="sheet kbup">
+          <span class="grab"></span>
+          <span class="fdate">10월 13일 화요일 · 2세 7개월<svg class="i s"><use href="#i-d"/></svg></span>
+          <div class="fld fq"><div class="lbl">아이의 말</div><div class="ln"><span class="caret"></span><span class="ph">들은 그대로 적어 주세요</span></div></div>
+          <div class="fld fm"><div class="lbl">여백 메모</div><div class="ln"><span class="ph">어떤 순간이었나요? 나중에 적어도 돼요</span></div></div>
+          <div class="chips"><span class="chip">엄마에게 해준 말</span><span class="chip">놀이하며 만든 말</span><span class="chip">좋아하는 것들</span></div>
+          <div class="acts-bar"><span class="ibo"><svg class="i"><use href="#i-cam"/></svg></span><span class="save">적어 두기</span></div>
+        </div>
+        <div class="kb"></div>
+      </div></div>
+      <figcaption>3. 빠른 기록이 아래에서 올라오고 <b>말 칸에 커서</b>, 키보드가 떠요. 카테고리는 골라도 되고 비워도 돼요(C-4).<span class="taps">탭 0 · 약 4초</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct"><div class="dh" style="margin-top:56px"><div class="d1">2026년 10월 13일 화요일</div></div></div>
+        <div class="scrim"></div>
+        <div class="sheet kbup">
+          <span class="grab"></span>
+          <span class="fdate">10월 13일 화요일 · 2세 7개월<svg class="i s"><use href="#i-d"/></svg></span>
+          <div class="fld fq"><div class="lbl">아이의 말</div><div class="ln">Can I do it again?<span class="caret"></span></div></div>
+          <div class="fld fm"><div class="lbl">여백 메모</div><div class="ln"><span class="ph">어떤 순간이었나요? 나중에 적어도 돼요</span></div></div>
+          <div class="chips"><span class="chip">엄마에게 해준 말</span><span class="chip">놀이하며 만든 말</span><span class="chip">좋아하는 것들</span></div>
+          <div class="acts-bar"><span class="ibo"><svg class="i"><use href="#i-cam"/></svg></span><span class="save tap">적어 두기</span></div>
+        </div>
+        <div class="kb"></div>
+      </div></div>
+      <figcaption>4. 들은 그대로 입력하고 키보드 바로 위 「적어 두기」 탭. 맞춤법을 고치거나 번역하지 않아요.<span class="taps">입력 + 탭 1 · 누적 3 · 약 18초</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct">
+          <div class="topbar"><span class="brand">말 일기</span><span class="ibs"><span class="ib"><svg class="i"><use href="#i-search"/></svg></span><span class="ib"><svg class="i"><use href="#i-set"/></svg></span></span></div>
+          <div class="dh"><div class="d1">2026년 10월 13일 화요일</div><div class="d2">아이 · 2세 7개월</div></div>
+          <article class="card"><span class="tape" aria-hidden="true"></span>
+            <div class="card-head"><span class="stamp">2026. 10. 13 화</span><span class="age">방금 적은 말 · 2세 7개월</span></div>
+            <p class="quote big"><span class="open">“</span>Can I do it again?</p>
+            <p class="memo" style="color:var(--ink-soft)">여백 메모는 저녁에 채워도 돼요.</p>
+          </article>
+        </div>
+        <div class="toast"><span class="stamp">10. 13</span><span>적어 두었어요 · 10월 13일 · 2세 7개월</span></div>
+        <div class="dock"><span class="write"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
+      </div></div>
+      <figcaption>5. 「적어 두었어요」 확인 줄. 시트가 내려가고 맨 위에 「방금 적은 말」로 보여요.<span class="taps">총 탭 3번 · 약 20초 (목표 30초)</span></figcaption>
+    </figure>
+  </div>
+  <div class="crit">
+    <div><b>성공 기준</b><ul><li>아이콘 → 저장 확인 30초 안, 탭 3번 이하(바로 적기 아이콘이면 2번).</li><li>날짜(오늘)·나이·유형(말)은 자동. 시트 <code>entries</code>에 들은 그대로 한 행.</li><li>「적기」와 「적어 두기」 모두 한 손 엄지로 닿는 하단.</li></ul></div>
+    <div><b>실패하면</b>쓴 말은 화면에서 먼저 사라지지 않아요. 시트에 적힌 게 확인된 뒤에만 입력란을 비워요. 느림·끊김·로그인 만료 화면은 <a href="#fail">실패·예외 공통</a>에 있어요.</div>
+  </div>
+</section>
+
+<!-- ======================= R-3 ======================= -->
+<section class="sc" id="r3" aria-labelledby="r3-h">
+  <h2 id="r3-h"><span class="pill">R-3</span>저녁에 채우기 — 「오늘 채울 것」에서</h2>
+  <p class="sit">아이가 잠든 뒤 소파에서. 낮에 급히 적은 말 두 개에 상황·카테고리·태그를 붙여요. 무엇이 비었는지 기억하지 않아도 대시보드가 먼저 보여 줘요.</p>
+  <p class="swipe" aria-hidden="true">옆으로 밀어 보세요 →</p>
+  <div class="strip" tabindex="0" role="region" aria-label="R-3 목업 4장, 옆으로 넘겨 보기">
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct">
+          <div class="topbar"><span class="brand">말 일기</span><span class="ibs"><span class="ib"><svg class="i"><use href="#i-search"/></svg></span><span class="ib"><svg class="i"><use href="#i-set"/></svg></span></span></div>
+          <div class="dh"><div class="d1">2026년 10월 13일 화요일</div><div class="d2">아이 · 2세 7개월</div></div>
+          <article class="card"><span class="tape" aria-hidden="true"></span>
+            <div class="card-head"><span class="stamp">2026. 10. 13 화</span><span class="age">가장 최근의 말 · 2세 7개월</span></div>
+            <p class="quote big"><span class="open">“</span>엄마 이거 봐!</p>
+          </article>
+          <div class="rel"><span class="n">3</span>
+            <h3 class="sec">오늘 채울 것 <small>오늘 적은 말 2개 — 상황이 비어 있어요</small></h3>
+            <div class="rows">
+              <div class="row tap sq"><div class="main"><div class="hq">Can I do it again?</div><div class="sub">상황이 비어 있어요</div></div><svg class="i"><use href="#i-r"/></svg></div>
+              <div class="row"><div class="main"><div class="hq">엄마 이거 봐!</div><div class="sub">상황 · 카테고리가 비어 있어요</div></div><svg class="i"><use href="#i-r"/></svg></div>
+            </div>
+          </div>
+        </div>
+        <div class="dock"><span class="write"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
+      </div></div>
+      <figcaption>1. 아이콘 → 대시보드. 「오늘 채울 것」의 첫 말 탭<span class="taps">탭 2 (아이콘, 말)</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="sheet kbup" style="top:54px;border-radius:0;box-shadow:none">
+          <div class="topbar" style="height:44px"><span class="back"><svg class="i"><use href="#i-l"/></svg>펼침면</span><span class="lbl">이 장 고치기</span></div>
+          <span class="fdate">10월 13일 화요일 · 2세 7개월<svg class="i s"><use href="#i-d"/></svg></span>
+          <div class="fld fq"><div class="lbl">아이의 말</div><div class="ln" style="min-height:44px">Can I do it again?</div></div>
+          <div class="fld fm"><div class="lbl">여백 메모</div><div class="ln"><span class="caret"></span><span class="ph">어떤 순간이었나요? 나중에 적어도 돼요</span></div></div>
+          <div class="chips"><span class="chip">엄마에게 해준 말</span><span class="chip">놀이하며 만든 말</span><span class="chip">좋아하는 것들</span></div>
+          <div class="acts-bar"><span class="ibo"><svg class="i"><use href="#i-cam"/></svg></span><span class="save">고쳐 두기</span></div>
+        </div>
+        <div class="kb"></div>
+      </div></div>
+      <figcaption>2. 그 장이 <b>여백 메모 칸에 커서</b>를 두고 열려요. 비어 있는 칸부터.<span class="taps">탭 0</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="sheet" style="top:54px;border-radius:0;box-shadow:none">
+          <div class="topbar" style="height:44px"><span class="back"><svg class="i"><use href="#i-l"/></svg>펼침면</span><span class="lbl">이 장 고치기</span></div>
+          <span class="fdate">10월 13일 화요일 · 2세 7개월<svg class="i s"><use href="#i-d"/></svg></span>
+          <div class="fld fq"><div class="lbl">아이의 말</div><div class="ln" style="min-height:44px">Can I do it again?</div></div>
+          <div class="fld fm"><div class="lbl">여백 메모</div><div class="ln">미끄럼틀을 세 번째 내려오고 나서, 계단 쪽으로 뛰어가며. 「again」 발음이 또렷했다.</div></div>
+          <div class="lbl" style="margin-top:16px">카테고리</div>
+          <div class="chips wrap" style="margin-top:4px"><span class="chip">엄마에게 해준 말</span><span class="chip on tap"><svg class="i s"><use href="#i-check"/></svg>놀이하며 만든 말</span><span class="chip">좋아하는 것들</span><span class="chip">일상 문장과 감정 표현</span></div>
+          <div class="fld"><div class="lbl">태그</div><div class="ln" style="display:flex;gap:12px;align-items:center"><span class="tag">#놀이터</span><span class="tag">#처음 한 문장</span><span class="ph" style="font-size:15px">+ 태그</span></div></div>
+          <div class="acts-bar"><span class="ibo"><svg class="i"><use href="#i-cam"/></svg></span><span class="save tap">고쳐 두기</span></div>
+        </div>
+      </div></div>
+      <figcaption>3. 상황을 적고, 카테고리 칩 하나, 태그(최근 태그 자동완성은 P1) → 「고쳐 두기」. 고른 칩은 색과 함께 체크 표시로도 구별돼요.<span class="taps">탭 2~4</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct">
+          <div class="topbar"><span class="back"><svg class="i"><use href="#i-l"/></svg>펼침면</span><span class="tbtn">고치기</span></div>
+          <article class="card"><span class="tape" aria-hidden="true"></span>
+            <div class="card-head"><span class="stamp">2026. 10. 13 화</span><span class="age">2세 7개월</span></div>
+            <p class="quote big"><span class="open">“</span>Can I do it again?</p>
+            <p class="memo">미끄럼틀을 세 번째 내려오고 나서, 계단 쪽으로 뛰어가며. 「again」 발음이 또렷했다.</p>
+            <div class="tags"><span class="cat">놀이하며 만든 말</span><span class="tag">#놀이터</span><span class="tag">#처음 한 문장</span></div>
+          </article>
+          <div class="slip calm" style="margin-top:24px"><p>고쳐 두었어요. 다음 말도 채울까요?</p><p class="sub" style="margin-top:4px">엄마 이거 봐! — 상황 · 카테고리가 비어 있어요</p>
+            <div class="acts"><span class="btn tap">다음 말 채우기</span><span class="btn quiet">그만할게요</span></div></div>
+        </div>
+      </div></div>
+      <figcaption>4. 「다음 말도 채울까요?」 — 이어서 하거나 멈추거나. 다 채우면 ③ 묶음이 사라지고 「오늘 페이지를 다 채웠어요」 한 줄만 잠깐 남아요(칭찬·점수 없음).<span class="taps">탭 1~2 · 말 하나당 3~5번</span></figcaption>
+    </figure>
+  </div>
+  <div class="crit">
+    <div><b>성공 기준</b>무엇이 비었는지 엄마가 기억하지 않아도 돼요. 서두를 필요 없는 흐름이라 탭 수보다 「찾지 않아도 된다」가 기준이에요.</div>
+    <div><b>실패하면</b>저장 실패 시 R-1과 같은 규칙 — 고친 내용이 화면에 남아요. 시트에서 같은 행을 손으로 고친 직후라면 앱이 시트를 다시 읽고 그 위에 고쳐요(충돌 처리 방식은 Q-T4).</div>
+  </div>
+</section>
+
+<!-- ======================= R-4 ======================= -->
+<section class="sc" id="r4" aria-labelledby="r4-h">
+  <h2 id="r4-h"><span class="pill">R-4</span>사진 붙이기 (저녁)</h2>
+  <p class="sit">낮에 놀이터에서 찍은 사진 2장을 「Can I do it again?」에 붙여요. 말은 이미 저장돼 있어서 사진만 따로 올라가요. 원본이 실패하면 사본만 남기지 않고 「다시 붙이기 필요」로 남겨요.</p>
+  <p class="swipe" aria-hidden="true">옆으로 밀어 보세요 →</p>
+  <div class="strip" tabindex="0" role="region" aria-label="R-4 목업 7장, 옆으로 넘겨 보기">
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct">
+          <div class="topbar"><span class="back"><svg class="i"><use href="#i-l"/></svg>펼침면</span><span class="ibs"><span class="ib"><svg class="i"><use href="#i-star"/></svg></span><span class="tbtn">고치기</span></span></div>
+          <article class="card"><span class="tape" aria-hidden="true"></span>
+            <div class="card-head"><span class="stamp">2026. 10. 13 화</span><span class="age">2세 7개월</span></div>
+            <p class="quote big"><span class="open">“</span>Can I do it again?</p>
+            <p class="memo">미끄럼틀을 세 번째 내려오고 나서, 계단 쪽으로 뛰어가며.</p>
+            <div class="tags"><span class="cat">놀이하며 만든 말</span><span class="tag">#놀이터</span></div>
+            <div style="margin-top:16px"><span class="btn ghost tap"><svg class="i s"><use href="#i-cam"/></svg>사진 붙이기</span></div>
+          </article>
+          <p class="sub" style="margin-top:12px">한 장에 사진은 10장까지예요.</p>
+        </div>
+      </div></div>
+      <figcaption>1. 그 장(대시보드 「오늘 채울 것」에서 들어옴)에서 「사진 붙이기」<span class="taps">탭 1 (들어오기까지 1~2)</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen os">
+        <div class="ct" style="padding:0">
+          <div class="pick-h"><span class="b">취소</span><span>2장 선택됨</span><span class="b tap">추가</span></div>
+          <div class="pgrid">
+            <span class="img park"><span class="ck">1</span></span><span class="img sand"></span><span class="img rain"></span>
+            <span class="img train"></span><span class="img park" style="filter:hue-rotate(30deg)"><span class="ck">2</span></span><span class="img book"></span>
+            <span class="img cake"></span><span class="img sand" style="filter:saturate(.6)"></span><span class="img rain"></span>
+            <span class="img book"></span><span class="img train"></span><span class="img cake"></span>
+          </div>
+        </div>
+        <span class="annl" style="bottom:64px;left:16px;right:16px">iOS 사진 선택기(앱 밖 화면). HEIC여도 엄마는 아무것도 하지 않아요</span>
+      </div></div>
+      <figcaption>2. 사진 2장을 고르고 「추가」<span class="taps">탭 3 · 누적 4~5</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct">
+          <div class="topbar"><span class="back"><svg class="i"><use href="#i-l"/></svg>펼침면</span><span class="ibs"><span class="ib"><svg class="i"><use href="#i-star"/></svg></span><span class="tbtn">고치기</span></span></div>
+          <article class="card"><span class="tape" aria-hidden="true"></span>
+            <div class="card-head"><span class="stamp">2026. 10. 13 화</span><span class="age">2세 7개월</span></div>
+            <p class="quote big"><span class="open">“</span>Can I do it again?</p>
+            <div class="prints" style="margin:12px 0">
+              <div class="print"><span class="img park"></span><div class="sub" style="color:var(--ink)">1/2 올리는 중</div><div class="prog"><i style="width:70%"></i></div></div>
+              <div class="print"><span class="img park" style="filter:hue-rotate(30deg)"></span><div class="sub" style="color:var(--ink)">기다리는 중</div><div class="prog"><i style="width:0"></i></div></div>
+            </div>
+            <p class="memo">미끄럼틀을 세 번째 내려오고 나서, 계단 쪽으로 뛰어가며.</p>
+          </article>
+          <p class="sub" style="margin-top:12px">말과 메모는 이미 적혀 있어요. 사진만 올라가는 중이에요.</p>
+        </div>
+      </div></div>
+      <figcaption>3. 사진마다 진행 표시 「1/2 올리는 중」. 말은 이미 저장돼 있어요.<span class="taps">탭 0</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct">
+          <div class="topbar"><span class="back tap"><svg class="i"><use href="#i-l"/></svg>펼침면</span><span class="ibs"><span class="ib"><svg class="i"><use href="#i-star"/></svg></span><span class="tbtn">고치기</span></span></div>
+          <article class="card"><div class="card-head"><span class="stamp">2026. 10. 13 화</span><span class="age">2세 7개월</span></div><p class="quote big">Can I do it again?</p></article>
+        </div>
+        <div class="dlg-wrap"><div class="dlg"><p>사진 1장이 아직 올라가는 중이에요. 떠나면 이 사진은 다시 골라야 해요.</p><div class="acts"><span class="btn quiet">떠나기</span><span class="btn">기다리기</span></div></div></div>
+      </div></div>
+      <figcaption>4. (예외) 올라가는 중에 뒤로 가려 하면 한 번 물어요. 말은 영향이 없어요.<span class="taps">탭 1</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct">
+          <div class="topbar"><span class="back"><svg class="i"><use href="#i-l"/></svg>펼침면</span><span class="ibs"><span class="ib"><svg class="i"><use href="#i-star"/></svg></span><span class="tbtn">고치기</span></span></div>
+          <article class="card"><span class="tape" aria-hidden="true"></span>
+            <div class="card-head"><span class="stamp">2026. 10. 13 화</span><span class="age">2세 7개월</span></div>
+            <p class="quote big"><span class="open">“</span>Can I do it again?</p>
+            <div class="prints" style="margin:12px 0">
+              <div class="print"><span class="img park"></span></div>
+              <div class="print"><span class="img park" style="filter:hue-rotate(30deg)"></span></div>
+            </div>
+            <p class="memo">미끄럼틀을 세 번째 내려오고 나서, 계단 쪽으로 뛰어가며.</p>
+          </article>
+        </div>
+        <div class="toast" style="bottom:56px"><svg class="i" style="color:var(--ink-blue)"><use href="#i-check"/></svg><span>사진 2장을 붙였어요 · 원본은 갤러리 10월 폴더에</span></div>
+      </div></div>
+      <figcaption>5. 다 올라가면 「사진 2장을 붙였어요 · 원본은 갤러리 10월 폴더에」<span class="taps">총 탭 6~7번</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct">
+          <div class="topbar"><span class="back"><svg class="i"><use href="#i-l"/></svg>펼침면</span><span class="ibs"><span class="ib"><svg class="i"><use href="#i-star"/></svg></span><span class="tbtn">고치기</span></span></div>
+          <div class="slip"><p>원본 사진을 못 올렸어요. 다시 붙여 주세요. 말과 메모는 그대로예요.</p></div>
+          <article class="card" style="margin-top:24px"><span class="tape" aria-hidden="true"></span>
+            <div class="card-head"><span class="stamp">2026. 10. 13 화</span><span class="age">2세 7개월</span></div>
+            <p class="quote big"><span class="open">“</span>Can I do it again?</p>
+            <div class="prints" style="margin:12px 0">
+              <div class="print"><span class="img park"></span></div>
+              <div class="ph-empty"><svg class="i"><use href="#i-cam"/></svg>사진 다시 붙이기 필요<span class="btn ghost" style="margin-top:4px;padding:0 12px"><svg class="i s"><use href="#i-retry"/></svg>다시 붙이기</span></div>
+            </div>
+            <p class="memo">미끄럼틀을 세 번째 내려오고 나서, 계단 쪽으로 뛰어가며.</p>
+          </article>
+        </div>
+        <span class="annl" style="bottom:56px;left:16px;right:16px">실패한 칸에는 사본도 띄우지 않아요(빈 점선 칸). 다시 고를지 폰이 들고 있을지는 Q-T3</span>
+      </div></div>
+      <figcaption>6. (실패) 원본 1장 실패 — 그 칸은 「사진 다시 붙이기 필요」로 남고, 붙은 1장은 그대로.<span class="taps">탭 1~ (다시 고르기)</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct">
+          <div class="topbar"><span class="brand">말 일기</span><span class="ibs"><span class="ib"><svg class="i"><use href="#i-search"/></svg></span><span class="ib"><svg class="i"><use href="#i-set"/></svg></span></span></div>
+          <div class="dh"><div class="d1">2026년 10월 13일 화요일</div><div class="d2">아이 · 2세 7개월</div></div>
+          <article class="card"><span class="tape" aria-hidden="true"></span>
+            <div class="card-head"><span class="stamp">2026. 10. 13 화</span><span class="age">가장 최근의 말 · 2세 7개월</span></div>
+            <p class="quote big"><span class="open">“</span>엄마 이거 봐!</p>
+          </article>
+          <div class="rel"><span class="n">3</span>
+            <h3 class="sec">오늘 채울 것</h3>
+            <div class="rows">
+              <div class="row"><svg class="i" style="color:var(--accent)"><use href="#i-cam"/></svg><div class="main">사진 다시 붙이기 1장<div class="sub">Can I do it again?</div></div><svg class="i"><use href="#i-r"/></svg></div>
+              <div class="row"><svg class="i"><use href="#i-pen"/></svg><div class="main"><div class="hq">엄마 이거 봐!</div><div class="sub">상황 · 카테고리가 비어 있어요</div></div><svg class="i"><use href="#i-r"/></svg></div>
+            </div>
+          </div>
+        </div>
+        <div class="dock"><span class="write"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
+      </div></div>
+      <figcaption>7. 실패한 사진은 대시보드 「오늘 채울 것」에도 남아요(조용히 반쯤 성공하지 않기).<span class="taps">탭 1 → 그 장</span></figcaption>
+    </figure>
+  </div>
+  <div class="crit">
+    <div><b>성공 기준</b>사진 한 장마다 상태가 보여요: 올리는 중 → 붙였어요 / 원본을 못 올렸어요 — 다시 시도. 원본은 받은 바이트 그대로 갤러리로 가요.</div>
+    <div><b>실패하면</b>원본이 실패하면 사본만 남기지 않아요. 로그인이 만료되면 「다시 들어온 뒤 사진을 한 번 더 골라 주세요. 말과 메모는 그대로예요.」 10장을 넘기면 고르기 전에 「한 장에 사진은 10장까지예요」.</div>
+  </div>
+</section>
+
+<!-- ======================= R-6 ======================= -->
+<section class="sc" id="r6" aria-labelledby="r6-h">
+  <h2 id="r6-h"><span class="pill">R-6</span>날짜 보충 · 날짜 모르는 말 (뒤쪽 주머니)</h2>
+  <p class="sit">a) 오늘 밤, 지난 토요일에 아이가 한 말이 생각났어요. b) 날짜를 모르는 예전 기록을 보다가 「아, 이건 10월 초였어」가 떠올랐어요. 모르는 건 모른다고 적고, 앱이 일·요일을 지어내지 않아요.</p>
+  <p class="sub-h">a. 지난주 일을 오늘 적기</p>
+  <div class="strip" tabindex="0" role="region" aria-label="R-6a 목업 3장, 옆으로 넘겨 보기">
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct"><div class="dh" style="margin-top:56px"><div class="d1">2026년 10월 13일 화요일</div></div></div>
+        <div class="scrim"></div>
+        <div class="sheet kbup">
+          <span class="grab"></span>
+          <span class="fdate tap">10월 13일 화요일 · 2세 7개월<svg class="i s"><use href="#i-d"/></svg></span>
+          <div class="fld fq"><div class="lbl">아이의 말</div><div class="ln"><span class="caret"></span><span class="ph">들은 그대로 적어 주세요</span></div></div>
+          <div class="fld fm"><div class="lbl">여백 메모</div><div class="ln"><span class="ph">어떤 순간이었나요? 나중에 적어도 돼요</span></div></div>
+          <div class="acts-bar"><span class="ibo"><svg class="i"><use href="#i-cam"/></svg></span><span class="save">적어 두기</span></div>
+        </div>
+        <div class="kb"></div>
+      </div></div>
+      <figcaption>1. 빠른 기록의 날짜 머리글 탭 (기본은 오늘)<span class="taps">탭 1 (적기까지 탭 2는 별도)</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct"><div class="dh" style="margin-top:56px"><div class="d1">2026년 10월 13일 화요일</div></div></div>
+        <div class="scrim"></div>
+        <div class="sheet" style="top:232px">
+          <span class="grab"></span>
+          <div class="fdate" style="align-self:auto">언제 들은 말인가요?</div>
+          <div class="seg"><span class="on"><svg class="i s"><use href="#i-check"/></svg>일</span><span>월</span><span>모름</span></div>
+          <div class="topbar" style="height:44px;margin-top:8px"><span class="ib"><svg class="i"><use href="#i-l"/></svg></span><span style="font-family:var(--font-memo);font-size:17px">2026년 10월</span><span class="ib"><svg class="i"><use href="#i-r"/></svg></span></div>
+          <div class="cal"><span class="h">일</span><span class="h">월</span><span class="h">화</span><span class="h">수</span><span class="h">목</span><span class="h">금</span><span class="h">토</span><span></span><span></span><span></span><span></span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span class="sel tap">10</span><span>11</span><span>12</span><span class="today">13</span><span class="fut">14</span><span class="fut">15</span><span class="fut">16</span><span class="fut">17</span><span class="fut">18</span><span class="fut">19</span><span class="fut">20</span><span class="fut">21</span><span class="fut">22</span><span class="fut">23</span><span class="fut">24</span><span class="fut">25</span><span class="fut">26</span><span class="fut">27</span><span class="fut">28</span><span class="fut">29</span><span class="fut">30</span><span class="fut">31</span></div>
+          <div class="acts-bar"><span class="save tap">10월 10일 토요일로</span></div>
+        </div>
+      </div></div>
+      <figcaption>2. 「일 / 월 / 모름」 중 「일」(기본) → 지난 토요일 → 확인. 확인 버튼에 고른 날짜가 그대로 보여요.<span class="taps">탭 2 · 누적 3</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct"><div class="dh" style="margin-top:56px"><div class="d1">2026년 10월 13일 화요일</div></div></div>
+        <div class="scrim"></div>
+        <div class="sheet kbup">
+          <span class="grab"></span>
+          <span class="fdate">10월 10일 토요일 · 2세 7개월<svg class="i s"><use href="#i-d"/></svg></span>
+          <div class="fld fq"><div class="lbl">아이의 말</div><div class="ln">아빠 train 타고 가요?<span class="caret"></span></div></div>
+          <div class="fld fm"><div class="lbl">여백 메모</div><div class="ln"><span class="ph">어떤 순간이었나요? 나중에 적어도 돼요</span></div></div>
+          <div class="acts-bar"><span class="ibo"><svg class="i"><use href="#i-cam"/></svg></span><span class="save tap">적어 두기</span></div>
+        </div>
+        <div class="kb"></div>
+      </div></div>
+      <figcaption>3. 머리글이 바뀌고 나이도 그 날짜로 다시 계산돼요 → 입력 → 「적어 두기」<span class="taps">총 탭 5번</span></figcaption>
+    </figure>
+  </div>
+
+  <p class="sub-h">b. 「날짜 미상」 기록에 대략적인 날짜 붙이기</p>
+  <div class="strip" tabindex="0" role="region" aria-label="R-6b 목업 5장, 옆으로 넘겨 보기">
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct">
+          <div class="rel" style="margin-top:8px"><span class="n">8</span>
+            <h3 class="sec" style="margin-top:8px">책갈피 · 뒤쪽 주머니</h3>
+            <div class="rows">
+              <div class="row"><svg class="i" style="color:var(--accent)"><use href="#i-star"/></svg><div class="main">책갈피 꽂은 말 5개</div><svg class="i"><use href="#i-r"/></svg></div>
+              <div class="row tap sq"><svg class="i"><use href="#i-pocket"/></svg><div class="main">날짜를 모르는 말 8개<div class="sub">뒤쪽 주머니 — 날짜를 채울 수 있어요</div></div><svg class="i"><use href="#i-r"/></svg></div>
+            </div>
+          </div>
+          <div class="rel"><span class="n">9</span>
+            <h3 class="sec">목차</h3>
+            <ol class="toc-l">
+              <li><span class="m">10월</span><span class="a">2세 7개월</span><span class="dots"></span><span class="n2">7</span></li>
+              <li><span class="m">9월</span><span class="a">2세 6개월</span><span class="dots"></span><span class="n2">12</span></li>
+              <li><span class="m">뒤쪽 주머니</span><span class="a">날짜 모름</span><span class="dots"></span><span class="n2">8</span></li>
+            </ol>
+          </div>
+        </div>
+        <span class="annl mid">대시보드 스크롤 ↓</span>
+        <div class="dock"><span class="write"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
+      </div></div>
+      <figcaption>1. 대시보드 ⑧ 「날짜를 모르는 말」(또는 목차 맨 끝 뒤쪽 주머니)<span class="taps">탭 1</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct">
+          <div class="topbar"><span class="back"><svg class="i"><use href="#i-l"/></svg>펼침면</span><span class="ib"><svg class="i"><use href="#i-search"/></svg></span></div>
+          <div class="chap">뒤쪽 주머니</div>
+          <p class="sub" style="font-size:15px;margin:4px 0 16px">언제인지 모르는 말 8개 · 날짜순 사이에 끼우지 않고 여기에 모아 둬요</p>
+          <div class="ent tap sq"><span class="stamp unk">언제인지 몰라요</span><p class="quote" style="margin-top:8px">한 번 더 해 줘</p><p class="memo">이관한 예전 기록</p></div>
+          <div class="ent"><span class="stamp unk">언제인지 몰라요</span><p class="quote" style="margin-top:8px">Bubble 터졌어</p><p class="memo">목욕하다가</p></div>
+          <div class="ent"><span class="stamp unk">언제인지 몰라요</span><p class="quote" style="margin-top:8px">엄마 noodle 줘</p></div>
+        </div>
+        <div class="dock"><span class="write"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
+      </div></div>
+      <figcaption>2. 뒤쪽 주머니 — 나이도 비워 둬요. 채우고 싶은 장 탭<span class="taps">탭 1 · 누적 2</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct">
+          <div class="topbar"><span class="back"><svg class="i"><use href="#i-l"/></svg>뒤쪽 주머니</span><span class="ibs"><span class="ib"><svg class="i"><use href="#i-star"/></svg></span><span class="tbtn">고치기</span></span></div>
+          <span class="fdate tap" style="display:inline-flex">언제인지 몰라요<svg class="i s"><use href="#i-d"/></svg></span>
+          <article class="card" style="margin-top:16px"><span class="tape" aria-hidden="true"></span>
+            <p class="quote big" style="margin-top:0"><span class="open">“</span>한 번 더 해 줘</p>
+            <p class="memo">이관한 예전 기록</p>
+            <div class="tags"><span class="cat">놀이하며 만든 말</span></div>
+          </article>
+        </div>
+      </div></div>
+      <figcaption>3. 그 장의 날짜 머리글 「언제인지 몰라요」 탭<span class="taps">탭 1 · 누적 3</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct"><div class="dh" style="margin-top:56px"><div class="d1">언제인지 몰라요</div></div></div>
+        <div class="scrim"></div>
+        <div class="sheet" style="top:312px">
+          <span class="grab"></span>
+          <div class="fdate" style="align-self:auto">언제 들은 말인가요?</div>
+          <div class="seg"><span>일</span><span class="on tap"><svg class="i s"><use href="#i-check"/></svg>월</span><span>모름</span></div>
+          <div class="topbar" style="height:44px;margin-top:8px"><span class="ib"><svg class="i"><use href="#i-l"/></svg></span><span style="font-family:var(--font-memo);font-size:17px">2026년</span><span class="ib"><svg class="i"><use href="#i-r"/></svg></span></div>
+          <div class="mgrid"><span>1월</span><span>2월</span><span>3월</span><span>4월</span><span>5월</span><span>6월</span><span>7월</span><span>8월</span><span>9월</span><span class="sel tap">10월</span><span class="fut">11월</span><span class="fut">12월</span></div>
+          <p class="sub" style="margin:12px 0 0">「10월 초」처럼 기억나는 건 여백 메모에 적어 두세요.</p>
+          <div class="acts-bar"><span class="save tap">2026년 10월 어느 날로</span></div>
+        </div>
+      </div></div>
+      <figcaption>4. 「월」 → 2026년 10월 → 확인. 일은 고르지 않아요.<span class="taps">탭 3 · 총 탭 5번</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct">
+          <div class="topbar"><span class="back"><svg class="i"><use href="#i-l"/></svg>뒤쪽 주머니</span><span class="ibs"><span class="ib"><svg class="i"><use href="#i-star"/></svg></span><span class="tbtn">고치기</span></span></div>
+          <span class="fdate" style="display:inline-flex">2026년 10월 어느 날 · 2세 7개월<svg class="i s"><use href="#i-d"/></svg></span>
+          <article class="card" style="margin-top:16px"><span class="tape" aria-hidden="true"></span>
+            <p class="quote big" style="margin-top:0"><span class="open">“</span>한 번 더 해 줘</p>
+            <p class="memo">이관한 예전 기록. 10월 초</p>
+            <div class="tags"><span class="cat">놀이하며 만든 말</span></div>
+          </article>
+        </div>
+        <div class="toast" style="bottom:56px"><svg class="i" style="color:var(--ink-blue)"><use href="#i-check"/></svg><span>10월 장 맨 앞 「10월 어느 날」에 옮겼어요</span></div>
+        <span class="annl" style="top:400px;left:16px;right:16px">그 달에 생일이 끼면 나이를 어떻게 쓸지는 Q6</span>
+      </div></div>
+      <figcaption>5. 「2026년 10월 어느 날」 — 요일·일을 지어내지 않아요. 「10월 초」는 여백 메모에 엄마 말 그대로. 시트에는 <code>2026-10</code> + <code>month</code>.<span class="taps">탭 0</span></figcaption>
+    </figure>
+  </div>
+  <div class="crit">
+    <div><b>성공 기준</b>모르는 것을 모른다고 적을 수 있고, 화면 어디에서도 그 기록에 가짜 일·요일이 보이지 않아요. <code>month</code> 기록은 그 달 장 맨 앞, <code>unknown</code>은 맨 뒤 주머니에 모여요.</div>
+    <div><b>표기</b><code>day</code> 10월 10일 토요일 · 2세 7개월 / <code>month</code> 2026년 10월 어느 날 · 2세 7개월 / <code>unknown</code> 언제인지 몰라요(나이 없음).</div>
+  </div>
+</section>
+
+<!-- ======================= V-2 ======================= -->
+<section class="sc" id="v2" aria-labelledby="v2-h">
+  <h2 id="v2-h"><span class="pill">V-2</span>일기장 넘겨 보기 (월별)</h2>
+  <p class="sit">여름에 무슨 말을 했었는지 돌아보고 싶을 때. 목차에서 달을 고르면 그 달이 한 장으로 펼쳐지고, 장 끝에서 한 번 탭으로 한 달씩 넘겨요. 끝없이 내리는 목록이 아니라 장 단위예요.</p>
+  <p class="swipe" aria-hidden="true">옆으로 밀어 보세요 →</p>
+  <div class="strip" tabindex="0" role="region" aria-label="V-2 목업 3장, 옆으로 넘겨 보기">
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct">
+          <div class="rel" style="margin-top:8px"><span class="n">9</span>
+            <h3 class="sec" style="margin-top:8px">목차</h3>
+            <ol class="toc-l">
+              <li><span class="m">10월</span><span class="a">2세 7개월</span><span class="dots"></span><span class="n2">7</span></li>
+              <li><span class="m">9월</span><span class="a">2세 6개월</span><span class="dots"></span><span class="n2">12</span></li>
+              <li class="tap sq"><span class="m">8월</span><span class="a">2세 5개월</span><span class="dots"></span><span class="n2">6</span></li>
+              <li><span class="m">7월</span><span class="a">2세 4개월</span><span class="dots"></span><span class="n2">3</span></li>
+              <li><span class="m">뒤쪽 주머니</span><span class="a">날짜 모름</span><span class="dots"></span><span class="n2">8</span></li>
+            </ol>
+          </div>
+        </div>
+        <span class="annl mid">대시보드 맨 아래</span>
+        <div class="dock"><span class="write"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
+      </div></div>
+      <figcaption>1. 대시보드 목차에서 「8월 · 2세 5개월」<span class="taps">탭 1</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct">
+          <div class="topbar"><span class="back"><svg class="i"><use href="#i-l"/></svg>펼침면</span><span class="ib"><svg class="i"><use href="#i-search"/></svg></span></div>
+          <div class="chap">8월</div>
+          <p class="sub" style="font-size:15px;margin:0 0 4px">2세 5개월 · 말 6개</p>
+          <div class="grp">8월 어느 날</div>
+          <div class="ent"><p class="quote">엄마, 이거 뭐야?</p><p class="memo">날짜는 모르고 8월인 것만 기억나요.</p></div>
+          <div class="grp">8월 3일 월요일 · 2세 5개월</div>
+          <div class="ent"><p class="quote">물 마셔요, 물!</p><p class="memo">더운 날 공원에서.</p></div>
+          <div class="grp">8월 15일 토요일 · 2세 5개월</div>
+          <div class="ent"><p class="quote">Big bubble! 엄청 커</p></div>
+        </div>
+        <div class="dock"><span class="write"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
+      </div></div>
+      <figcaption>2. 8월 장 — 장 머리에 달·나이·말 수. 날짜를 달까지만 아는 말은 맨 앞 「8월 어느 날」에 모여요. 날짜 머리글 아래 그날의 말들.<span class="taps">스크롤</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct">
+          <div class="grp" style="margin-top:8px">8월 22일 토요일 · 2세 5개월</div>
+          <div class="ent"><p class="quote">아니야, 내 거야</p><p class="memo">놀이터 모래 삽을 두고.</p></div>
+          <div class="grp">8월 28일 금요일 · 2세 5개월</div>
+          <div class="ent"><p class="quote">Bye bye 비행기</p></div>
+          <div class="ent"><p class="quote">또 와요</p><p class="memo">할머니 배웅하며.</p></div>
+          <div class="pager"><span><svg class="i"><use href="#i-l"/></svg>7월 장</span><span class="tap">9월 장<svg class="i"><use href="#i-r"/></svg></span></div>
+        </div>
+        <span class="annl mid">장 끝까지 스크롤 ↓</span>
+        <div class="dock"><span class="write"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
+      </div></div>
+      <figcaption>3. 장 끝의 「← 7월 장 · 9월 장 →」로 한 달씩 넘겨요.<span class="taps">탭 1 · 원하는 달까지 3탭 안</span></figcaption>
+    </figure>
+  </div>
+  <div class="crit">
+    <div><b>성공 기준</b>3탭 안에 원하는 달에 닿아요. 장 머리에 「8월 · 2세 5개월 · 말 6개」.</div>
+    <div><b>이렇게 되면</b>말이 없는 달은 「8월은 비어 있어요」 한 줄과 이웃 장 링크만(문구 초안). 3D 페이지 넘김 같은 장식은 쓰지 않아요.</div>
+  </div>
+</section>
+
+<!-- ======================= V-3 ======================= -->
+<section class="sc" id="v3" aria-labelledby="v3-h">
+  <h2 id="v3-h"><span class="pill">V-3</span>찾기 — 검색과 필터</h2>
+  <p class="sit">「dinosaur라고 처음 말한 게 언제였지?」 또는 「공룡 태그만 모아 보기」. 검색은 아이의 말과 여백 메모를 모두 찾고, 아래 칩(책갈피 · 요즘 태그 · 카테고리 · 언어)은 겹쳐 고를 수 있어요.</p>
+  <p class="swipe" aria-hidden="true">옆으로 밀어 보세요 →</p>
+  <div class="strip" tabindex="0" role="region" aria-label="V-3 목업 4장, 옆으로 넘겨 보기">
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct">
+          <div class="topbar"><span class="brand">말 일기</span><span class="ibs"><span class="ib tap"><svg class="i"><use href="#i-search"/></svg></span><span class="ib"><svg class="i"><use href="#i-set"/></svg></span></span></div>
+          <div class="dh"><div class="d1">2026년 10월 13일 화요일</div><div class="d2">아이 · 2세 7개월</div></div>
+          <article class="card"><span class="tape" aria-hidden="true"></span>
+            <div class="card-head"><span class="stamp">2026. 10. 13 화</span><span class="age">가장 최근의 말 · 2세 7개월</span></div>
+            <p class="quote big"><span class="open">“</span>Can I do it again?</p>
+          </article>
+        </div>
+        <div class="dock"><span class="write"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
+      </div></div>
+      <figcaption>1. 대시보드(또는 일기장) 위쪽 「찾기」<span class="taps">탭 1</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct">
+          <div class="topbar"><span class="back"><svg class="i"><use href="#i-l"/></svg></span><span class="search"><svg class="i s"><use href="#i-search"/></svg><span class="v">dino<span class="caret"></span></span><svg class="i s"><use href="#i-x"/></svg></span></div>
+          <div class="chips"><span class="chip"><svg class="i s"><use href="#i-star"/></svg>책갈피</span><span class="chip">#공룡</span><span class="chip">#기차</span><span class="chip">영어가 섞인 말</span></div>
+          <p class="sub" style="margin:12px 0 8px">dino — 3개 · 오래된 날부터</p>
+          <div class="rows">
+            <div class="row tap sq"><span class="rd">06. 20 토</span><div class="main"><div class="hq"><mark>Dino</mark>saur 와요!</div></div></div>
+            <div class="row"><span class="rd">08. 15 토</span><div class="main"><div class="hq">공룡 봐</div><div class="sub">여백: 그림책 「<mark>dino</mark> 친구들」을 보며</div></div></div>
+            <div class="row"><span class="rd">10. 05 월</span><div class="main"><div class="hq">엄마 이거 봐! <mark>dino</mark>saur 발자국이야</div></div></div>
+          </div>
+        </div>
+        <div class="kb"></div>
+      </div></div>
+      <figcaption>2. <code>dino</code> 입력 → 일치한 글자를 표시한 결과. 대소문자는 가리지 않아요(Q-T5). 결과 하나를 누르면 그 장.<span class="taps">입력 + 탭 1 · 누적 2</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct">
+          <div class="topbar"><span class="back"><svg class="i"><use href="#i-l"/></svg></span><span class="search"><svg class="i s"><use href="#i-search"/></svg><span>말이나 메모로 찾기</span></span></div>
+          <div class="chips"><span class="chip"><svg class="i s"><use href="#i-star"/></svg>책갈피</span><span class="chip on tap"><svg class="i s"><use href="#i-check"/></svg>#공룡</span><span class="chip">#기차</span><span class="chip">영어가 섞인 말</span></div>
+          <p class="sentence" style="margin:12px 0 8px">공룡 · 말 9개 · 2026년 6월부터</p>
+          <div class="rows">
+            <div class="row"><span class="rd">06. 20 토</span><div class="main"><div class="hq">Dinosaur 와요!</div></div></div>
+            <div class="row"><span class="rd">07. 04 토</span><div class="main"><div class="hq">크앙 크앙 놀이</div></div></div>
+            <div class="row"><span class="rd">08. 15 토</span><div class="main"><div class="hq">공룡 봐</div></div></div>
+            <div class="row"><span class="rd">09. 06 일</span><div class="main"><div class="hq">공룡 알 깨졌어</div></div></div>
+            <div class="row"><span class="rd">10. 05 월</span><div class="main"><div class="hq">엄마 이거 봐! dinosaur 발자국이야</div></div></div>
+          </div>
+        </div>
+        <div class="dock"><span class="write"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
+      </div></div>
+      <figcaption>3. 칩 하나 → 결과 위에 「공룡 · 말 9개 · 2026년 6월부터」 한 줄. 칩은 겹쳐 고를 수 있어요.<span class="taps">탭 1~2</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct">
+          <div class="topbar"><span class="back"><svg class="i"><use href="#i-l"/></svg></span><span class="search"><svg class="i s"><use href="#i-search"/></svg><span class="v">stegosaurus</span><svg class="i s"><use href="#i-x"/></svg></span></div>
+          <div class="chips"><span class="chip on"><svg class="i s"><use href="#i-check"/></svg>책갈피</span><span class="chip on"><svg class="i s"><use href="#i-check"/></svg>#공룡</span><span class="chip">#기차</span></div>
+          <div style="text-align:center;margin-top:96px">
+            <p class="sentence" style="font-size:17px">이 말은 아직 일기장에 없어요</p>
+            <span class="btn blue tap" style="margin-top:16px">필터 풀어 보기</span>
+          </div>
+        </div>
+        <div class="dock"><span class="write"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
+      </div></div>
+      <figcaption>4. 결과가 없을 때 — 「이 말은 아직 일기장에 없어요」 + 필터를 풀어 보는 버튼.<span class="taps">탭 1</span></figcaption>
+    </figure>
+  </div>
+  <div class="crit">
+    <div><b>성공 기준</b>탭 2~3번으로 원하는 말에 닿아요. 칩은 시트의 카테고리·태그 목록을 읽어 런타임에 그려요.</div>
+    <div><b>이렇게 되면</b>결과가 없으면 따뜻한 빈 상태와 필터 풀기. 고른 칩은 색만이 아니라 체크 아이콘으로도 구별해요.</div>
+  </div>
+</section>
+
+<!-- ======================= V-4 ======================= -->
+<section class="sc" id="v4" aria-labelledby="v4-h">
+  <h2 id="v4-h"><span class="pill">V-4</span>한 장 자세히 보기 · 고치기 · 지우기</h2>
+  <p class="sit">어디서든 말 하나를 누르면 그 장이 열려요. 사진은 크게, 좌우로 넘기고, 같은 날의 이웃 말은 아래 「이전 말 · 다음 말」로 넘겨요. 지우기는 소프트 삭제라 언제든 되살릴 수 있어요.</p>
+  <p class="swipe" aria-hidden="true">옆으로 밀어 보세요 →</p>
+  <div class="strip" tabindex="0" role="region" aria-label="V-4 목업 3장, 옆으로 넘겨 보기">
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct">
+          <div class="topbar"><span class="back"><svg class="i"><use href="#i-l"/></svg>펼침면</span><span class="ibs"><span class="ib" style="color:var(--accent)"><svg class="i fill"><use href="#i-star"/></svg></span><span class="tbtn tap">고치기</span></span></div>
+          <div style="position:relative"><span class="img park" style="width:100%;height:280px;border-radius:4px"></span><span class="annl" style="top:12px;right:12px;background:var(--ink);color:var(--card)">1 / 2</span></div>
+          <div class="card-head" style="margin-top:16px"><span class="stamp">2026. 10. 13 화</span><span class="age">2세 7개월</span></div>
+          <p class="quote big"><span class="open">“</span>Can I do it again?</p>
+          <p class="memo">미끄럼틀을 세 번째 내려오고 나서, 계단 쪽으로 뛰어가며. 「again」 발음이 또렷했다.</p>
+          <div class="tags"><span class="cat">놀이하며 만든 말</span><span class="tag">#놀이터</span><span class="tag">#처음 한 문장</span></div>
+          <div class="pager" style="position:absolute;left:16px;right:16px;bottom:46px"><span><svg class="i"><use href="#i-l"/></svg>이전 말</span><span>다음 말<svg class="i"><use href="#i-r"/></svg></span></div>
+        </div>
+        <span class="annl" style="top:250px;left:16px">사진은 좌우로 넘김</span>
+      </div></div>
+      <figcaption>1. 한 장 — 큰 사진(좌우 넘김), 인용, 여백 메모, 카테고리·태그. 별은 책갈피(P1), 채워진 별 = 꽂힘.<span class="taps">탭 1 (어디서든 말 하나)</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="sheet" style="top:54px;border-radius:0;box-shadow:none">
+          <div class="topbar" style="height:44px"><span class="back"><svg class="i"><use href="#i-x"/></svg>그만두기</span><span class="lbl">이 장 고치기</span></div>
+          <span class="fdate">10월 13일 화요일 · 2세 7개월<svg class="i s"><use href="#i-d"/></svg></span>
+          <div class="seg" style="margin-top:8px"><span class="on"><svg class="i s"><use href="#i-check"/></svg>말</span><span>행동</span><span>에피소드</span></div>
+          <div class="fld fq"><div class="lbl">아이의 말</div><div class="ln" style="min-height:44px">Can I do it again?</div></div>
+          <div class="fld fm"><div class="lbl">여백 메모</div><div class="ln">미끄럼틀을 세 번째 내려오고 나서, 계단 쪽으로 뛰어가며.</div></div>
+          <div class="lbl" style="margin-top:12px">사진</div>
+          <div style="display:flex;gap:8px;margin-top:4px"><span class="img park" style="width:64px;height:64px"></span><span class="img park" style="width:64px;height:64px;filter:hue-rotate(30deg)"></span><span class="ibo" style="width:64px;height:64px;border-radius:4px"><svg class="i"><use href="#i-plus"/></svg></span></div>
+          <div class="chips" style="margin-top:12px"><span class="chip">엄마에게 해준 말</span><span class="chip on"><svg class="i s"><use href="#i-check"/></svg>놀이하며 만든 말</span></div>
+          <span class="more tap" style="color:var(--accent);margin-top:8px">이 장 지우기</span>
+          <div class="acts-bar"><span class="save">고쳐 두기</span></div>
+        </div>
+      </div></div>
+      <figcaption>2. 「고치기」 → 모든 칸 편집(날짜·유형·말·메모·사진·카테고리). 맨 아래 「이 장 지우기」.<span class="taps">탭 1</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct">
+          <div class="topbar"><span class="back"><svg class="i"><use href="#i-x"/></svg>그만두기</span></div>
+          <p class="quote big">Can I do it again?</p>
+        </div>
+        <div class="dlg-wrap"><div class="dlg"><p>이 장을 지울까요? 「지운 장 모음」에서 언제든 되살릴 수 있어요.</p><div class="acts"><span class="btn quiet">그대로 두기</span><span class="btn tap">지우기</span></div></div></div>
+      </div></div>
+      <figcaption>3. 지우기 확인 — 기한(「30일 뒤 삭제」)을 말하지 않아요. 사진 원본도 Drive에 그대로예요.<span class="taps">탭 1 · 누적 2</span></figcaption>
+    </figure>
+  </div>
+  <div class="crit">
+    <div><b>성공 기준</b>사진 넘기기(좌우 밀기)와 말 넘기기(아래 버튼)가 서로 다른 동작이라 겹치지 않아요. 뒤로 가면 온 곳의 같은 스크롤 위치로 돌아가요.</div>
+    <div><b>이렇게 되면</b>지운 장은 설정 → 「지운 장 모음」에서 되살려요. 시트 행은 지우지 않고 <code>deleted_at</code>만 채워요.</div>
+  </div>
+</section>
+
+<!-- ======================= V-6 ======================= -->
+<section class="sc" id="v6" aria-labelledby="v6-h">
+  <h2 id="v6-h"><span class="pill">V-6</span>연말 포토북 준비 — 앱 밖 Drive까지</h2>
+  <p class="sit">12월 말, 포토프린터로 올해 사진을 뽑고 사진 옆에 그날의 말을 적고 싶어요. 앱은 캡션 목록을 만들어 주고, 나머지는 Drive 폴더만 보고도 순서를 알 수 있어야 해요. 노트북에서 할 가능성이 높지만(Q1) 여기선 폰 기준으로 그렸어요.</p>
+  <p class="swipe" aria-hidden="true">옆으로 밀어 보세요 →</p>
+  <div class="strip" tabindex="0" role="region" aria-label="V-6 목업 7장, 옆으로 넘겨 보기">
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct">
+          <div class="topbar"><span class="brand">말 일기</span><span class="ibs"><span class="ib"><svg class="i"><use href="#i-search"/></svg></span><span class="ib"><svg class="i"><use href="#i-set"/></svg></span></span></div>
+          <div class="dh"><div class="d1">2026년 12월 28일 월요일</div><div class="d2">아이 · 2세 9개월</div></div>
+          <div class="slip calm"><p style="font-family:var(--font-memo);font-size:17px">올해 일기장 묶기</p><p class="sub" style="margin-top:4px">포토프린터로 뽑을 때 옆에 둘 캡션 목록을 만들어요. 12월~1월에만 보여요.</p><div class="acts"><span class="btn blue tap">2026년 캡션 목록 만들기</span></div></div>
+          <article class="card" style="margin-top:24px"><span class="tape" aria-hidden="true"></span>
+            <div class="card-head"><span class="stamp">2026. 12. 27 일</span><span class="age">가장 최근의 말 · 2세 9개월</span></div>
+            <p class="quote big"><span class="open">“</span>Snow! 눈사람 만들어</p>
+          </article>
+        </div>
+        <div class="dock"><span class="write"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
+      </div></div>
+      <figcaption>1. 12월에만 대시보드에 뜨는 「올해 일기장 묶기」 카드(제안 C-7). 설정의 같은 항목으로도 들어가요.<span class="taps">탭 1</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct">
+          <div class="topbar"><span class="back"><svg class="i"><use href="#i-l"/></svg>펼침면</span></div>
+          <div class="chap">2026년 일기장 묶기</div>
+          <p class="sentence">사진 128장, 말 214개를 날짜순으로 캡션 목록에 담아요.</p>
+          <div class="slip" style="margin-top:16px"><p>날짜를 모르는 사진 3장이 있어요. 이 사진들은 앱에 올린 날 기준 폴더에 있어요.</p><div class="acts"><span class="btn ghost">먼저 날짜 채우기</span></div></div>
+          <p class="sub" style="margin-top:16px;font-size:15px">지난번 목록은 그대로 두고 새로 만들어요. 만들어지는 곳: 갤러리 2026 폴더 — 「2026 캡션」 문서와 표 파일.</p>
+          <div style="margin-top:24px"><span class="btn full tap">캡션 목록 만들기</span></div>
+        </div>
+      </div></div>
+      <figcaption>2. 만들기 전에 확인 — 빠질 수 있는 것(날짜 모르는 사진)을 먼저 알려 줘요.<span class="taps">탭 1 · 누적 2</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct">
+          <div class="topbar"><span class="back"><svg class="i"><use href="#i-l"/></svg>펼침면</span></div>
+          <div class="chap">만들었어요</div>
+          <p class="sentence">「2026 캡션」 문서를 갤러리 2026 폴더에 두었어요. 사진 파일 이름이 사진과 캡션을 잇는 열쇠예요.</p>
+          <div style="display:grid;gap:12px;margin-top:24px">
+            <span class="btn blue full tap" style="justify-content:flex-start;padding:0 20px"><svg class="i"><use href="#i-folder"/></svg>갤러리 폴더 열기</span>
+            <span class="btn blue full" style="justify-content:flex-start;padding:0 20px"><svg class="i"><use href="#i-doc"/></svg>캡션 문서 열기</span>
+          </div>
+        </div>
+      </div></div>
+      <figcaption>3. 「만들었어요」 + 두 링크. 여기서 앱 밖(Drive)으로 나가요.<span class="taps">탭 1</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen os">
+        <div class="ct" style="padding:0">
+          <div class="drive-h"><div class="path">내 드라이브 › Word Diary</div><div class="t">아이</div></div>
+          <ul class="dl">
+            <li class="tap sq"><span class="ico"><svg class="i"><use href="#i-folder"/></svg></span><span class="nm">gallery<small>원본 사진</small></span></li>
+            <li><span class="ico"><svg class="i"><use href="#i-folder"/></svg></span><span class="nm">audio</span></li>
+            <li><span class="ico"><svg class="i"><use href="#i-folder"/></svg></span><span class="nm">.web</span></li>
+          </ul>
+        </div>
+        <span class="annl" style="top:330px;left:16px;right:16px">.web은 앱용 작은 사본 — Drive에서 숨겨지지 않아 헷갈릴 수 있어요(C-8). 폴더 「아이」는 실제로는 아이 이름</span>
+      </div></div>
+      <figcaption>4. (Drive) 아이 폴더 — gallery가 원본. .web 폴더가 함께 보여요.<span class="taps">앱 밖</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen os">
+        <div class="ct" style="padding:0">
+          <div class="drive-h"><div class="path">… › 아이 › gallery</div><div class="t">2026</div></div>
+          <ul class="dl">
+            <li><span class="ico"><svg class="i"><use href="#i-doc"/></svg></span><span class="nm">2026 캡션<small>Google 문서 · 12월 28일</small></span></li>
+            <li><span class="ico"><svg class="i"><use href="#i-table"/></svg></span><span class="nm">_captions.csv</span></li>
+            <li><span class="ico"><svg class="i"><use href="#i-folder"/></svg></span><span class="nm">2026-08</span></li>
+            <li><span class="ico"><svg class="i"><use href="#i-folder"/></svg></span><span class="nm">2026-09</span></li>
+            <li class="tap sq"><span class="ico"><svg class="i"><use href="#i-folder"/></svg></span><span class="nm">2026-10</span></li>
+            <li><span class="ico"><svg class="i"><use href="#i-folder"/></svg></span><span class="nm">2026-11</span></li>
+            <li><span class="ico"><svg class="i"><use href="#i-folder"/></svg></span><span class="nm">2026-12</span></li>
+          </ul>
+        </div>
+      </div></div>
+      <figcaption>5. (Drive) 연도 폴더 — 월 폴더가 이름순 = 시간순. 캡션 문서와 표가 같은 곳에.<span class="taps">앱 밖</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen os">
+        <div class="ct" style="padding:0">
+          <div class="drive-h"><div class="path">… › gallery › 2026</div><div class="t">2026-10</div></div>
+          <ul class="dl">
+            <li><span class="thumb img sand"></span><span class="nm">2026-10-05_153010_01.jpg</span></li>
+            <li><span class="thumb img rain"></span><span class="nm">2026-10-12_091520_01.heic<small>아이폰 원본 형식 그대로</small></span></li>
+            <li><span class="thumb img park"></span><span class="nm">2026-10-13_143005_01.jpg</span></li>
+            <li><span class="thumb img park" style="filter:hue-rotate(30deg)"></span><span class="nm">2026-10-13_143005_02.jpg</span></li>
+          </ul>
+        </div>
+        <span class="annl" style="top:420px;left:16px;right:16px">파일 이름이 촬영 시각이라 이름순 = 시간순. HEIC 원본도 바꾸지 않고 그대로 — 포토프린터가 HEIC를 못 읽으면? (질문)</span>
+      </div></div>
+      <figcaption>6. (Drive) 월 폴더 — 원본 파일이 <code>YYYY-MM-DD_HHMMSS_NN</code> 이름으로. 이 순서대로 뽑으면 돼요.<span class="taps">앱 밖</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen os">
+        <div class="ct" style="padding:0"><div class="drive-h"><div class="path">Google 문서</div><div class="t">2026 캡션</div></div></div>
+        <div class="doc">
+          <div class="nt">사진 원본은 gallery 폴더에 있어요. .web 폴더는 앱용 작은 사본이라 뽑지 않아도 돼요.</div>
+          <div class="it"><span class="thumb img sand"></span><div><div class="fn">2026-10-05_153010_01.jpg</div>10월 5일 월요일 · 2세 7개월<div class="w">엄마 이거 봐! dinosaur 발자국이야</div>모래에 발로 꾹꾹 찍어 놓고.</div></div>
+          <div class="it"><span class="thumb img park"></span><div><div class="fn">2026-10-13_143005_01.jpg</div>10월 13일 화요일 · 2세 7개월<div class="w">Can I do it again?</div></div></div>
+          <div class="it"><span class="thumb img cake"></span><div><div class="fn">2026-11-02_190211_01.jpg</div><span class="flag">언제인지 몰라요 · 앱에 올린 날 기준으로 이 폴더에 있어요</span><div class="w">생일 축하해 me!</div></div></div>
+        </div>
+      </div></div>
+      <figcaption>7. (Google 문서) 캡션 — 날짜순, 썸네일·파일명·날짜·나이·말·상황. 첫 줄 안내와 날짜 모르는 사진 표시는 제안 C-8.<span class="taps">앱 밖</span></figcaption>
+    </figure>
+  </div>
+  <div class="crit">
+    <div><b>성공 기준</b>앱을 닫은 채 Drive만으로 「어떤 사진을 어떤 순서로 뽑고 옆에 무엇을 적을지」 알 수 있어요.</div>
+    <div><b>이렇게 되면</b>다시 만들면 덮어쓰지 않고 날짜를 붙여 새로 만들어요. 사진 촬영일과 말 날짜가 다르면 캡션에 두 날짜를 모두 써요(C-8).</div>
+  </div>
+</section>
+
+<!-- ======================= 실패·예외 공통 ======================= -->
+<section class="sc" id="fail" aria-labelledby="fail-h">
+  <h2 id="fail-h"><span class="pill">공통</span>실패·예외 — 쓴 말은 사라지지 않아요</h2>
+  <p class="sit">놀이터의 느린 데이터, 끊긴 네트워크, Google 로그인 만료. 어떤 경우에도 쓴 말은 화면에서 먼저 사라지지 않고, 시트에 적힌 게 확인된 뒤에만 입력란을 비워요. 실패는 그 자리에서 사람 말로, 할 수 있는 일 1~2개와 함께 알려요.</p>
+  <p class="swipe" aria-hidden="true">옆으로 밀어 보세요 →</p>
+  <div class="strip" tabindex="0" role="region" aria-label="실패·예외 목업 6장, 옆으로 넘겨 보기">
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct"><div class="dh" style="margin-top:56px"><div class="d1">2026년 10월 13일 화요일</div></div></div>
+        <div class="scrim"></div>
+        <div class="sheet lo">
+          <span class="grab"></span>
+          <span class="fdate">10월 13일 화요일 · 2세 7개월<svg class="i s"><use href="#i-d"/></svg></span>
+          <div class="fld fq"><div class="lbl">아이의 말</div><div class="ln">Can I do it again?</div></div>
+          <p class="sub" style="margin-top:16px;font-size:15px;color:var(--ink)">조금 느려요. 이 화면을 닫지 않으셔도 돼요.</p>
+          <div class="acts-bar"><span class="ibo"><svg class="i"><use href="#i-cam"/></svg></span><span class="save busy">적는 중…</span></div>
+        </div>
+      </div></div>
+      <figcaption>1. 느림 — 버튼이 「적는 중…」으로 바뀌고 입력란은 그대로. 5초가 넘으면 안내 한 줄.<span class="taps">기다림</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct"><div class="dh" style="margin-top:56px"><div class="d1">2026년 10월 13일 화요일</div></div></div>
+        <div class="scrim"></div>
+        <div class="sheet" style="top:248px">
+          <span class="grab"></span>
+          <span class="fdate">10월 13일 화요일 · 2세 7개월<svg class="i s"><use href="#i-d"/></svg></span>
+          <div class="fld fq"><div class="lbl">아이의 말</div><div class="ln">Can I do it again?</div></div>
+          <div class="slip" style="margin-top:16px"><p style="display:flex;gap:8px"><svg class="i" style="color:var(--accent)"><use href="#i-off"/></svg><span>아직 일기장에 옮기지 못했어요. 쓴 말은 이 폰에 그대로 있어요.</span></p>
+            <div class="acts"><span class="btn tap"><svg class="i s"><use href="#i-retry"/></svg>다시 옮기기</span><span class="btn quiet"><svg class="i s"><use href="#i-copy"/></svg>말 복사하기</span></div></div>
+        </div>
+      </div></div>
+      <figcaption>2. 네트워크 끊김 — 말은 그대로, 「다시 옮기기」와 「말 복사하기」(메모 앱으로 옮기는 마지막 안전망).<span class="taps">탭 1</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct"><div class="dh" style="margin-top:56px"><div class="d1">2026년 10월 13일 화요일</div></div></div>
+        <div class="scrim"></div>
+        <div class="sheet" style="top:248px">
+          <span class="grab"></span>
+          <span class="fdate">10월 13일 화요일 · 2세 7개월<svg class="i s"><use href="#i-d"/></svg></span>
+          <div class="fld fq"><div class="lbl">아이의 말</div><div class="ln">Can I do it again?</div></div>
+          <div class="slip" style="margin-top:16px"><p style="display:flex;gap:8px"><svg class="i" style="color:var(--accent)"><use href="#i-key"/></svg><span>Google에 다시 들어가야 해요. 쓴 말은 지켜 두었어요.</span></p>
+            <div class="acts"><span class="btn tap">Google에 다시 들어가기</span><span class="btn quiet"><svg class="i s"><use href="#i-copy"/></svg>말 복사하기</span></div></div>
+        </div>
+      </div></div>
+      <figcaption>3. 로그인 만료 — 다시 들어가면 페이지가 새로 열리므로 이 폰에 임시 보관(C-2, Q-T1).<span class="taps">탭 1</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen os">
+        <div class="ct" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:16px;color:var(--os-soft)">
+          <div style="width:240px;height:160px;border:2px dashed var(--os-line);border-radius:12px;display:flex;align-items:center;justify-content:center">Google 로그인 화면</div>
+          <p style="max-width:280px;margin:0">앱 밖 화면이라 앱이 바꿀 수 없어요. 돌아온 뒤 이어 쓰기만 보장해요.</p>
+        </div>
+      </div></div>
+      <figcaption>4. (앱 밖) Google 로그인<span class="taps">로그인 탭 몇 번</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct"><div class="dh" style="margin-top:56px"><div class="d1">2026년 10월 13일 화요일</div></div></div>
+        <div class="scrim"></div>
+        <div class="sheet" style="top:248px">
+          <span class="grab"></span>
+          <div class="slip calm"><p>지켜 둔 말이에요. 아직 일기장에 옮기지 않았어요.</p></div>
+          <span class="fdate" style="margin-top:8px">10월 13일 화요일 · 2세 7개월<svg class="i s"><use href="#i-d"/></svg></span>
+          <div class="fld fq"><div class="lbl">아이의 말</div><div class="ln">Can I do it again?</div></div>
+          <div class="acts-bar"><span class="ibo"><svg class="i"><use href="#i-cam"/></svg></span><span class="save tap">적어 두기</span></div>
+        </div>
+      </div></div>
+      <figcaption>5. 다시 들어오면 빠른 기록이 <b>그 말이 채워진 채로</b> 다시 떠요. 날짜는 들은 날 그대로.<span class="taps">탭 1</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct">
+          <div class="topbar"><span class="brand">말 일기</span><span class="ibs"><span class="ib"><svg class="i"><use href="#i-search"/></svg></span><span class="ib"><svg class="i"><use href="#i-set"/></svg></span></span></div>
+          <div class="dh"><div class="d1">2026년 10월 13일 화요일</div><div class="d2">아이 · 2세 7개월</div></div>
+          <article class="card"><span class="tape" aria-hidden="true"></span>
+            <div class="card-head"><span class="stamp">2026. 10. 13 화</span><span class="age">방금 적은 말 · 2세 7개월</span></div>
+            <p class="quote big"><span class="open">“</span>Can I do it again?</p>
+          </article>
+        </div>
+        <div class="toast"><svg class="i" style="color:var(--ink-blue)"><use href="#i-check"/></svg><span>이미 적어 두었어요</span></div>
+        <div class="dock"><span class="write"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
+      </div></div>
+      <figcaption>6. 「다시 옮기기」를 연타했거나 사실은 이미 적혔던 경우 — 한 번만 적히고 「이미 적어 두었어요」.<span class="taps">탭 0</span></figcaption>
+    </figure>
+  </div>
+  <div class="crit">
+    <div><b>원칙</b><ul><li>쓴 것은 화면에서 먼저 사라지지 않아요.</li><li>화면 밖에서도 지켜요(이 폰에 임시 보관, 안 되면 「말 복사하기」).</li><li>조용히 반쯤 성공하지 않아요(원본 사진 실패 시 사본만 남기지 않음).</li><li>떠날 때는 저장 안 된 입력·올라가는 사진이 있을 때만 물어요.</li></ul></div>
+    <div><b>다음에 앱을 열면</b>옮기지 못한 말이 남아 있으면 대시보드 맨 위에 「아직 옮기지 못한 말 1개」(<a href="#v1">V-1 첫 목업</a>).</div>
+  </div>
+</section>
+
+<!-- ======================= 넓은 화면 ======================= -->
+<section class="sc" id="wide" aria-labelledby="wide-h">
+  <h2 id="wide-h"><span class="pill">3.4</span>넓은 화면 — 대시보드 펼침면</h2>
+  <p class="sit">노트북·태블릿에서는 일기장을 두 쪽으로 펼쳐요. 왼쪽 쪽은 오늘·최근의 말·이번 달(①②④), 오른쪽 쪽은 채울 것·사진·이맘때·요즘·책갈피(③⑤⑥⑦⑧), 목차(⑨)는 책 옆 인덱스 탭. 넓어진 자리는 숫자가 아니라 말과 사진을 더 보여 주는 데 써요. 주로 쓰실지는 Q1이에요.</p>
+  <p class="swipe" aria-hidden="true">옆으로 밀어 보세요 →</p>
+  <div class="wide-wrap" tabindex="0" role="region" aria-label="넓은 화면 목업, 옆으로 밀어 보기">
+    <div class="laptop"><div class="wscreen">
+      <div class="wbar"><span class="brand">말 일기</span><span class="search" style="max-width:320px"><svg class="i s"><use href="#i-search"/></svg><span>말이나 메모로 찾기</span></span><span style="flex:1"></span><span class="ib"><svg class="i"><use href="#i-set"/></svg></span><span class="write" style="height:44px;padding:0 24px;font-size:16px"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
+      <div class="spread">
+        <div class="pg">
+          <div class="dh rel" style="margin-top:0"><span class="n l">1</span><div class="d1">2026년 10월 13일 화요일</div><div class="d2">아이 · 2세 7개월</div></div>
+          <div class="rel"><span class="n l">2</span>
+            <div class="card-head"><span class="stamp">2026. 10. 13 화</span><span class="age">가장 최근의 말 · 2세 7개월</span></div>
+            <p class="quote big"><span class="open">“</span>Can I do it again?</p>
+            <p class="memo">미끄럼틀을 세 번째 내려오고 나서, 계단 쪽으로 뛰어가며.</p>
+          </div>
+          <div class="rel"><span class="n l">4</span>
+            <h3 class="sec">10월 <small>말 7개를 적었어요 · 10월 장 펼치기</small></h3>
+            <div class="row"><span class="rd">10. 13 화</span><div class="main"><div class="hq">엄마 이거 봐!</div></div></div>
+            <div class="row"><span class="rd">10. 12 월</span><div class="main"><div class="hq">Look, 비 와요</div></div></div>
+            <div class="row"><span class="rd">10. 11 일</span><div class="main"><div class="hq">아빠 train 타고 가요?</div></div></div>
+            <div class="row"><span class="rd">10. 05 월</span><div class="main"><div class="hq">엄마 이거 봐! dinosaur 발자국이야</div></div></div>
+            <div class="row"><span class="rd">10. 03 토</span><div class="main"><div class="hq">한 번 더!</div></div></div>
+          </div>
+        </div>
+        <div class="pg">
+          <div class="rel"><span class="n">3</span>
+            <h3 class="sec" style="margin-top:0">오늘 채울 것 <small>상황이 비어 있는 말 2개</small></h3>
+            <div class="row"><div class="main"><div class="hq">Can I do it again?</div></div><svg class="i"><use href="#i-r"/></svg></div>
+          </div>
+          <div class="rel"><span class="n">5</span>
+            <h3 class="sec">사진이 있는 순간</h3>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+              <div class="print"><span class="img sand"></span></div><div class="print"><span class="img park"></span></div><div class="print"><span class="img rain"></span></div><div class="print"><span class="img train"></span></div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+            <div class="rel"><span class="n">6</span><h3 class="sec">예전 이맘때</h3><div class="sub">한 달 전 · 9월 13일 일요일</div><div class="hq">No no, 내가 할래</div></div>
+            <div class="rel"><span class="n">7</span><h3 class="sec">요즘 빠져 있는 것</h3><span class="lnk">#공룡</span> · <span class="lnk">#기차</span> · <span class="lnk">#그림책</span></div>
+          </div>
+          <div class="rel"><span class="n">8</span><div class="sub" style="font-size:15px;margin-top:12px">책갈피 꽂은 말 5개 · 날짜를 모르는 말 8개</div></div>
+        </div>
+      </div>
+      <span class="n" style="top:84px;right:52px">9</span><div class="itabs"><span class="on">10월</span><span>9월</span><span>8월</span><span>7월</span><span style="font-size:13px">주머니</span></div>
+    </div></div>
+  </div>
+  <div class="crit">
+    <div><b>성공 기준</b>넓다고 숫자·그래프를 늘리지 않아요. 「적기」는 넓은 화면에서도 늘 보이는 자리(여기선 위쪽 막대 오른쪽). 빠른 기록은 하단 시트 대신 오른쪽 쪽 위에 펼쳐지는 칸이어도 돼요.</div>
+  </div>
+</section>
+
+<!-- ======================= 열린 질문 ======================= -->
+<section class="sc" id="questions" aria-labelledby="q-h">
+  <h2 id="q-h"><span class="pill">8.1</span>여쭤볼 것 — 목업에 비추어</h2>
+  <p class="sit">목업은 아래 질문마다 한쪽을 골라 그려 둔 것이에요. 다르게 원하시면 그 부분만 바뀌어요.</p>
+  <ol class="qs">
+    <li><b>Q1</b><span class="q">대시보드는 주로 폰과 노트북 중 어디서 보실 것 같나요? 연말 포토북은 노트북에서 하시나요?</span><span class="m">목업: 폰이 기본, 넓은 화면은 펼침면 한 장만 그렸어요(<a href="#wide">3.4</a>). 포토북(V-6)도 폰으로 그렸어요.</span></li>
+    <li><b>Q2</b><span class="q">홈 화면에 아이콘을 두 개(「말 일기」 + 「바로 적기」) 두는 건 괜찮으세요?</span><span class="m">목업: <a href="#r1">R-1 첫 화면</a>에 점선 「바로 적기」로 표시. 하나만이면 R-1은 탭 3번 + 대시보드 로딩.</span></li>
+    <li><b>Q3</b><span class="q">놀이터에서는 카테고리를 안 고르고 저장해도 될까요?</span><span class="m">목업: 빠른 기록의 칩은 고르지 않아도 「적어 두기」가 눌려요. 비우면 저녁에 「오늘 채울 것」에 떠요(R-3).</span></li>
+    <li><b>Q4</b><span class="q">「오늘 채울 것」이 도움이 될까요, 숙제처럼 느껴질까요?</span><span class="m">목업: 펼친 채로 첫 화면(③)에 두었어요. 숙제 같으면 한 줄 요약으로 접을 수 있어요.</span></li>
+    <li><b>Q5</b><span class="q">「1년 전 오늘」이 생기기 전까지 「한 달 전 이맘때」를 대신 보여 드려도 될까요?</span><span class="m">목업: <a href="#v1">V-1 네 번째 화면</a> ⑥이 「한 달 전 이맘때 · 9월 13일」.</span></li>
+    <li><b>Q6</b><span class="q">달만 아는 기록의 나이는 어떻게 적을까요? (범위 / 1일 기준 / 비우기)</span><span class="m">목업: 일단 「2026년 10월 어느 날 · 2세 7개월」 한 값으로 그렸어요(<a href="#r6">R-6b</a>).</span></li>
+    <li><b>Q7</b><span class="q">일기장 목차를 달로 나눌까요, 나이(개월)로 나눌까요?</span><span class="m">목업: 달 + 옆에 나이(「8월 · 2세 5개월」). 나이로 나누면 줄 이름과 장 머리가 바뀌어요.</span></li>
+    <li><b>Q8</b><span class="q">성장 그래프를 원하세요, 「처음 다섯 단어 넘는 문장을 한 날」 같은 이정표 한 줄이 나을까요?</span><span class="m">목업: 그래프는 어디에도 없어요. 숫자는 「말 7개를 적었어요」 수준만.</span></li>
+    <li><b>Q9</b><span class="q">날짜 모르는 예전 기록을 일기장 맨 뒤 「뒤쪽 주머니」에 모아 두는 방식, 괜찮으세요?</span><span class="m">목업: <a href="#r6">R-6b 두 번째 화면</a>이 그 모습이에요.</span></li>
+    <li><b>Q10</b><span class="q">「책갈피」「뒤쪽 주머니」「적어 두기」「고쳐 두기」 같은 일기장 말투 이름이 좋으세요, 「즐겨찾기」「저장」처럼 익숙한 이름이 좋으세요?</span><span class="m">목업: 일기장 말투로 그렸어요. 바꾸면 버튼 글자만 바뀌어요.</span></li>
+  </ol>
+</section>
+</main>
+<script>
+  // 목업 공통 조각(상태바·홈 인디케이터·키보드)을 채운다. 앱 동작과는 무관한 그림용 스크립트.
+  document.querySelectorAll('.screen').forEach(function (s) {
+    var sb = document.createElement('div');
+    sb.className = 'sb'; sb.setAttribute('aria-hidden', 'true');
+    sb.innerHTML = '<span>9:41</span><span class="r"><i class="bar" style="height:4px"></i><i class="bar" style="height:6px"></i><i class="bar" style="height:8px"></i><i class="bar" style="height:10px"></i><span class="bat"></span></span>';
+    s.prepend(sb);
+    if (!s.querySelector('.kb')) { var hi = document.createElement('span'); hi.className = 'hi'; hi.setAttribute('aria-hidden', 'true'); s.append(hi); }
+  });
+  document.querySelectorAll('.kb').forEach(function (kb) {
+    kb.setAttribute('aria-hidden', 'true');
+    var row = function (keys) { return '<div class="kr">' + keys + '</div>'; };
+    var k = function (s) { return s.split('').map(function (c) { return '<span class="k">' + c + '</span>'; }).join(''); };
+    kb.innerHTML = '<div class="sug"><span>again</span><span>again?</span><span>a gain</span></div>' +
+      row(k('qwertyuiop')) + row(k('asdfghjkl')) +
+      row('<span class="k w">⇧</span>' + k('zxcvbnm') + '<span class="k w">⌫</span>') +
+      row('<span class="k w">123</span><span class="k w">🌐</span><span class="k sp">space</span><span class="k ret">return</span>');
+  });
+</script>
+</body>
+</html>
