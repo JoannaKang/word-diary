@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>말 일기 무드보드</title>
+<!-- 외부 리소스는 Google Fonts만. 사진은 CSS 도형, 질감은 인라인 SVG/그라디언트. 예시 문장은 모두 지어낸 것. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&family=Hi+Melody&family=Nanum+Myeongjo&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+<style>
+  /* ---------- 무드보드 문서 자체의 틀 (방향안과 무관한 중립 톤) ---------- */
+  :root {
+    --board-bg: #F4F1EC;
+    --board-ink: #2B2926;
+    --board-soft: #5F5A54;   /* on #F4F1EC: 6.2:1 */
+    --board-rule: #D9D3CA;
+
+    --font-hand: 'Gaegu', 'Nanum Pen Script', cursive;
+    --font-memo: 'Gowun Batang', 'Nanum Myeongjo', serif;
+    --font-ui: 'Gowun Dodum', system-ui, -apple-system, 'Apple SD Gothic Neo', sans-serif;
+
+    /* 4px 체계 */
+    --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 20px; --s6: 24px; --s8: 32px; --s10: 40px;
+
+    /* 종이 결: 인라인 SVG 노이즈 (외부 파일 아님) */
+    --grain: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.35  0 0 0 0 0.28  0 0 0 0 0.2  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+
+  /* ---------- 방향안별 토큰 ---------- */
+  .dir-a { /* 크림 모눈 다이어리 (추천) */
+    --paper: #FBF6EA; --card: #FFFDF7; --ink: #2E2A26; --ink-soft: #655B50;
+    --accent: #B0412C; --ink-blue: #2F4A6B; --rule: #E3D8C2; --rule-strong: #8C7D6A;
+    --tape: #E9C9A8; --tape-alpha: .78; --grain-op: .05; --grid: #EEE5D3;
+    --texture: linear-gradient(var(--grid) 1px, transparent 1px) 0 0 / 16px 16px,
+               linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0 / 16px 16px;
+  }
+  .dir-b { /* 크라프트 줄노트 */
+    --paper: #E8DAC0; --card: #F6EEDD; --ink: #33281F; --ink-soft: #5C4B3B;
+    --accent: #8A3B24; --ink-blue: #34495E; --rule: #CDB894; --rule-strong: #7D6A52;
+    --tape: #B9C7A8; --tape-alpha: .85; --grain-op: .10;
+    --texture: linear-gradient(transparent 27px, var(--rule) 27px, var(--rule) 28px) 0 0 / 100% 28px;
+  }
+  .dir-c { /* 수채 스크랩북 */
+    --paper: #FFFCF6; --card: #FFFFFF; --ink: #34302C; --ink-soft: #69605A;
+    --accent: #B4473C; --ink-blue: #3D5A73; --rule: #EFE6DA; --rule-strong: #968A7E;
+    --tape: #F3D3C4; --tape-alpha: .8; --grain-op: .03;
+    --texture: radial-gradient(60% 50% at 20% 30%, #F6D8C8 0%, transparent 70%),
+               radial-gradient(50% 45% at 80% 70%, #DCE6D2 0%, transparent 70%);
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--board-bg); color: var(--board-ink);
+    font-family: var(--font-ui); font-size: 16px; line-height: 1.6;
+    overflow-x: hidden;
+  }
+  main { max-width: 560px; margin: 0 auto; padding: var(--s6) var(--s4) var(--s10); }
+  h1 { font-family: var(--font-memo); font-size: 28px; line-height: 1.3; margin: 0 0 var(--s2); }
+  h2 { font-family: var(--font-memo); font-size: 22px; line-height: 1.35; margin: 0 0 var(--s1); }
+  h3 { font-size: 15px; margin: var(--s6) 0 var(--s2); color: var(--board-soft); font-weight: 400; letter-spacing: .02em; }
+  p { margin: 0 0 var(--s3); }
+  .lede { color: var(--board-soft); font-size: 15px; }
+  .note { font-size: 13px; color: var(--board-soft); line-height: 1.5; }
+  section.dir { margin-top: var(--s10); padding-top: var(--s6); border-top: 1px solid var(--board-rule); }
+  .badge { display: inline-block; font-size: 12px; padding: 0 var(--s2); border-radius: 999px; background: var(--board-ink); color: #fff; vertical-align: middle; margin-left: var(--s2); }
+
+  /* ---------- 스와치 ---------- */
+  .swatches { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s2); }
+  .sw { border: 1px solid var(--board-rule); border-radius: 8px; overflow: hidden; background: #fff; font-size: 12px; line-height: 1.4; }
+  .sw .chip { height: 44px; display: flex; align-items: center; padding: 0 var(--s3); font-size: 15px; }
+  .sw .meta { padding: var(--s2) var(--s3); }
+  .sw b { font-weight: 700; font-size: 13px; }
+  .sw code { font-family: ui-monospace, Menlo, monospace; font-size: 12px; }
+
+  /* ---------- 지면(방향안 배경) ---------- */
+  .page {
+    position: relative; margin-top: var(--s4); padding: var(--s6) var(--s4);
+    background-color: var(--paper); border-radius: 4px; color: var(--ink);
+    box-shadow: 0 1px 2px rgba(60, 45, 30, .12);
+    overflow: hidden; isolation: isolate;
+  }
+  .page::before { content: ""; position: absolute; inset: 0; background: var(--texture); z-index: -2; }
+  .page::after { content: ""; position: absolute; inset: 0; background-image: var(--grain); opacity: var(--grain-op); z-index: -1; pointer-events: none; }
+
+  /* ---------- 기록 카드 ---------- */
+  .card {
+    position: relative; background: var(--card); color: var(--ink);
+    padding: var(--s6) var(--s4) var(--s4); border-radius: 2px;
+    box-shadow: 0 1px 0 rgba(60,45,30,.06), 0 2px 8px rgba(60,45,30,.08);
+    margin-top: var(--s6);
+  }
+  .card + .card { margin-top: var(--s8); }
+  .tape {
+    position: absolute; top: -10px; left: 50%; width: 88px; height: 22px;
+    transform: translateX(-50%) rotate(-2deg);
+    background: var(--tape); opacity: var(--tape-alpha);
+    /* 손으로 찢은 양 끝 */
+    clip-path: polygon(0 8%, 4% 0, 96% 4%, 100% 0, 98% 50%, 100% 100%, 3% 96%, 0 100%, 2% 50%);
+  }
+  .card-head { display: flex; align-items: center; justify-content: space-between; gap: var(--s2); flex-wrap: wrap; }
+  .stamp {
+    font-family: var(--font-ui); font-size: 13px; letter-spacing: .04em; color: var(--accent);
+    border: 1.5px solid var(--accent); border-radius: 4px; padding: 0 var(--s2);
+    transform: rotate(-2deg); display: inline-block; line-height: 24px;
+  }
+  .age { font-size: 13px; color: var(--ink-soft); }
+  .quote {
+    font-family: var(--font-hand); font-weight: 700; font-size: 30px; line-height: 1.3;
+    margin: var(--s3) 0 var(--s2); color: var(--ink); overflow-wrap: anywhere; word-break: keep-all;
+    letter-spacing: -0.02em; word-spacing: -0.12em; /* Gaegu는 자간·어간이 넓어 살짝 조인다 */
+  }
+  .quote .open { color: var(--accent); margin-right: 2px; }
+  .memo { font-family: var(--font-memo); font-size: 15px; line-height: 1.7; color: var(--ink-soft); margin: 0 0 var(--s3); }
+  .tags { display: flex; gap: var(--s2); flex-wrap: wrap; }
+  .tag { font-size: 13px; color: var(--ink-blue); border-bottom: 1px dashed var(--ink-blue); line-height: 24px; }
+
+  /* ---------- 사진 프레임 ---------- */
+  .photo-row { display: flex; gap: var(--s3); align-items: flex-start; margin: var(--s3) 0; }
+  .print { background: #FFFFFF; padding: 6px 6px 22px; box-shadow: 0 1px 3px rgba(60,45,30,.18); transform: rotate(-1.5deg); flex: 0 0 auto; }
+  .print + .print { transform: rotate(1.2deg); }
+  .print .img { width: 120px; height: 120px; }
+  .img { display: block; border-radius: 1px; }
+  .img.park { background:
+      radial-gradient(18px 18px at 78% 22%, #F7D27A 98%, transparent 100%),
+      radial-gradient(120% 60% at 30% 110%, #8DAA6C 60%, transparent 61%),
+      linear-gradient(#BFD9E8, #E8F0EA); }
+  .img.sand { background:
+      radial-gradient(10px 7px at 35% 60%, #A98C63 90%, transparent 100%),
+      radial-gradient(10px 7px at 55% 52%, #A98C63 90%, transparent 100%),
+      radial-gradient(10px 7px at 70% 66%, #A98C63 90%, transparent 100%),
+      linear-gradient(#E9D6B4, #D9C29B); }
+  .print figcaption { font-family: var(--font-hand); font-size: 15px; color: var(--ink-soft); text-align: center; margin-top: var(--s1); line-height: 1.2; }
+  .photo-plain .img { width: 100%; height: 180px; border-radius: 4px; }
+
+  /* ---------- 요약 타일 / 입력 견본 (구조는 ux 문서가 정함, 여기선 옷만) ---------- */
+  .toc { margin-top: var(--s6); background: var(--card); padding: var(--s4); border-radius: 2px; box-shadow: 0 1px 4px rgba(60,45,30,.08); }
+  .toc .sentence { font-family: var(--font-memo); font-size: 16px; line-height: 1.7; color: var(--ink); margin: 0 0 var(--s2); }
+  .toc .sentence a { color: var(--ink-blue); text-decoration: underline; text-decoration-style: dashed; text-underline-offset: 4px; }
+  .toc ol { list-style: none; margin: 0; padding: 0; }
+  .toc li { display: flex; align-items: center; gap: var(--s2); min-height: 44px; border-top: 1px solid var(--rule); font-size: 15px; }
+  .toc li .m { font-family: var(--font-memo); color: var(--ink); }
+  .toc li .a { color: var(--ink-soft); font-size: 13px; }
+  .toc li .dots { flex: 1; border-bottom: 1px dotted var(--rule-strong); transform: translateY(-4px); }
+  .toc li .n { color: var(--ink-soft); font-size: 13px; font-variant-numeric: tabular-nums; }
+  .field { margin-top: var(--s6); background: var(--card); padding: var(--s4); border-radius: 2px; box-shadow: 0 1px 4px rgba(60,45,30,.08); }
+  .field label { display: block; font-size: 13px; color: var(--ink-soft); }
+  .field .line {
+    font-family: var(--font-hand); font-size: 26px; min-height: 44px; line-height: 44px;
+    border-bottom: 1.5px solid var(--rule-strong); color: var(--ink); letter-spacing: -0.02em; word-spacing: -0.12em;
+  }
+  .field .caret { display: inline-block; width: 2px; height: 26px; background: var(--accent); vertical-align: -4px; margin-left: 2px; }
+  .btn {
+    margin-top: var(--s4); min-height: 44px; min-width: 44px; padding: 0 var(--s5);
+    border: 0; border-radius: 22px; background: var(--accent); color: var(--card);
+    font-family: var(--font-ui); font-size: 16px; cursor: pointer;
+  }
+
+  /* ---------- 서체 견본 ---------- */
+  .spec { background: #fff; border: 1px solid var(--board-rule); border-radius: 8px; padding: var(--s4); margin-top: var(--s3); }
+  .spec .who { font-size: 12px; color: var(--board-soft); margin-bottom: var(--s1); }
+  .spec .big { font-size: 30px; line-height: 1.3; word-break: keep-all; overflow-wrap: anywhere; letter-spacing: -0.02em; word-spacing: -0.12em; }
+  .spec .mid { font-size: 16px; line-height: 1.7; }
+  .gaegu { font-family: 'Gaegu', cursive; font-weight: 700; }
+  .nanumpen { font-family: 'Nanum Pen Script', cursive; font-size: 36px !important; }
+  .himelody { font-family: 'Hi Melody', cursive; }
+  .gbatang { font-family: 'Gowun Batang', serif; }
+  .nmyeong { font-family: 'Nanum Myeongjo', serif; }
+  .gdodum { font-family: 'Gowun Dodum', sans-serif; }
+
+  /* ---------- 과함 견본 ---------- */
+  .anti { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s3); margin-top: var(--s3); }
+  .anti > div { border-radius: 8px; padding: var(--s3); font-size: 13px; line-height: 1.5; }
+  .anti .ok { background: #FBF6EA; color: #2E2A26; border: 1px solid #E3D8C2; }
+  .anti .no {
+    color: #5a4630;
+    background:
+      repeating-linear-gradient(45deg, rgba(120,80,40,.18) 0 2px, transparent 2px 6px),
+      radial-gradient(circle at 30% 30%, #d9b98a, #a77d4f);
+    border: 3px double #6b4a2a; position: relative;
+  }
+  .anti .no .tt { font-family: 'Nanum Pen Script', cursive; font-size: 22px; line-height: 1.1; }
+  .anti .verdict { display: block; margin-top: var(--s2); font-size: 12px; font-weight: 700; }
+  .anti .no .verdict { color: #3b2a18; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .card { transition: transform .2s ease-out; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>말 일기 무드보드</h1>
+  <p class="lede">엄마가 직접 쓰는 육아일기 — 세 가지 방향을 같은 견본으로 나란히 봅니다. 모든 예시 문장은 지어낸 것이고, 사진은 CSS 도형입니다.</p>
+  <p class="note">대비율은 WCAG 2 상대 휘도 공식으로 계산한 값입니다. 본문 4.5:1, 큰 글자(24px 이상, 굵게 18.66px 이상)·아이콘·입력선 3:1이 기준입니다. 화면 구조(대시보드 펼침면 배치)는 ux 문서 <code>scenarios.md</code>가 정하며, 여기 목차·입력란은 「옷」 견본일 뿐입니다.</p>
+
+  <!-- ================= A ================= -->
+  <section class="dir dir-a" aria-labelledby="a-title">
+    <h2 id="a-title">A. 크림 모눈 다이어리 <span class="badge">추천</span></h2>
+    <p class="note">크림 종이 + 옅은 4mm 모눈, 만년필 블루블랙과 주홍 날짜 도장. 정돈된 다이어리.</p>
+
+    <h3>팔레트 · 바탕(paper/card) 위 대비</h3>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:#FBF6EA;color:#2E2A26">paper</div><div class="meta"><b>paper</b> <code>#FBF6EA</code><br>바탕</div></div>
+      <div class="sw"><div class="chip" style="background:#FFFDF7;color:#2E2A26">card</div><div class="meta"><b>card</b> <code>#FFFDF7</code><br>vs paper 1.06 · 그림자로 구분</div></div>
+      <div class="sw"><div class="chip" style="background:#2E2A26;color:#FFFDF7">ink</div><div class="meta"><b>ink</b> <code>#2E2A26</code><br>paper 13.20 · card 13.99</div></div>
+      <div class="sw"><div class="chip" style="background:#655B50;color:#FFFDF7">ink-soft</div><div class="meta"><b>ink-soft</b> <code>#655B50</code><br>paper 6.15 · card 6.52</div></div>
+      <div class="sw"><div class="chip" style="background:#B0412C;color:#FFFDF7">accent</div><div class="meta"><b>accent</b> <code>#B0412C</code><br>paper 5.35 · card 5.67</div></div>
+      <div class="sw"><div class="chip" style="background:#2F4A6B;color:#FFFDF7">ink-blue</div><div class="meta"><b>ink-blue</b> <code>#2F4A6B</code><br>paper 8.42 · card 8.93</div></div>
+      <div class="sw"><div class="chip" style="background:#E3D8C2;color:#2E2A26">rule</div><div class="meta"><b>rule</b> <code>#E3D8C2</code><br>1.31 · 구분선, 글자 금지</div></div>
+      <div class="sw"><div class="chip" style="background:#EEE5D3;color:#2E2A26">grid</div><div class="meta"><b>grid</b> <code>#EEE5D3</code><br>모눈 선 · 장식 전용</div></div>
+      <div class="sw"><div class="chip" style="background:#8C7D6A;color:#FFFDF7">rule-strong</div><div class="meta"><b>rule-strong</b> <code>#8C7D6A</code><br>card 3.93 · 입력선(3:1)</div></div>
+      <div class="sw"><div class="chip" style="background:#E9C9A8;color:#2E2A26">tape</div><div class="meta"><b>tape</b> <code>#E9C9A8</code><br>ink 9.07 · ink-soft 4.23 ✗</div></div>
+    </div>
+
+    <div class="page">
+      <article class="card">
+        <span class="tape" aria-hidden="true"></span>
+        <div class="card-head"><span class="stamp">2026. 10. 03 토</span><span class="age">2세 7개월</span></div>
+        <p class="quote"><span class="open">“</span>Can I do it again? 한 번 더!</p>
+        <p class="memo">미끄럼틀을 세 번째 내려오고 나서, 계단 쪽으로 뛰어가며.</p>
+        <div class="tags"><span class="tag">#놀이터</span><span class="tag">#처음 한 문장</span></div>
+      </article>
+
+      <article class="card">
+        <span class="tape" aria-hidden="true" style="left:24%;transform:translateX(-50%) rotate(3deg)"></span>
+        <div class="card-head"><span class="stamp">2026. 10. 05 월</span><span class="age">2세 7개월</span></div>
+        <p class="quote"><span class="open">“</span>엄마 이거 봐! dinosaur 발자국이야, really big one</p>
+        <div class="photo-row">
+          <figure class="print" style="margin:0"><span class="img sand" role="img" aria-label="모래 위 발자국 사진 견본"></span><figcaption>모래 놀이</figcaption></figure>
+          <figure class="print" style="margin:0"><span class="img park" role="img" aria-label="공원 사진 견본"></span><figcaption>10월 5일</figcaption></figure>
+        </div>
+        <p class="memo">모래에 발로 꾹꾹 찍어 놓고 공룡이 왔다 갔다고.</p>
+        <div class="tags"><span class="tag">#공룡</span></div>
+      </article>
+
+      <div class="toc" aria-label="대시보드 옷 견본 — 문장 속 숫자와 목차">
+        <p class="sentence">10월에는 말 7개를 적었어요 · <a href="#a-title">10월 장 펼치기</a></p>
+        <ol>
+          <li><span class="m">10월</span><span class="a">2세 7개월</span><span class="dots" aria-hidden="true"></span><span class="n">7</span></li>
+          <li><span class="m">9월</span><span class="a">2세 6개월</span><span class="dots" aria-hidden="true"></span><span class="n">12</span></li>
+        </ol>
+      </div>
+
+      <div class="field">
+        <label>아이가 한 말</label>
+        <div class="line">Look, 비 와요<span class="caret"></span></div>
+        <button class="btn" type="button">저장</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= B ================= -->
+  <section class="dir dir-b" aria-labelledby="b-title">
+    <h2 id="b-title">B. 크라프트 줄노트</h2>
+    <p class="note">갈색 크라프트지 + 줄노트, 세이지 테이프. 따뜻하지만 바탕이 어두워 사진 색이 탁해 보이기 쉽습니다.</p>
+    <h3>팔레트 · 바탕(paper/card) 위 대비</h3>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:#E8DAC0;color:#33281F">paper</div><div class="meta"><b>paper</b> <code>#E8DAC0</code></div></div>
+      <div class="sw"><div class="chip" style="background:#F6EEDD;color:#33281F">card</div><div class="meta"><b>card</b> <code>#F6EEDD</code><br>vs paper 1.20</div></div>
+      <div class="sw"><div class="chip" style="background:#33281F;color:#F6EEDD">ink</div><div class="meta"><b>ink</b> <code>#33281F</code><br>paper 10.40 · card 12.43</div></div>
+      <div class="sw"><div class="chip" style="background:#5C4B3B;color:#F6EEDD">ink-soft</div><div class="meta"><b>ink-soft</b> <code>#5C4B3B</code><br>paper 6.03 · card 7.21</div></div>
+      <div class="sw"><div class="chip" style="background:#8A3B24;color:#F6EEDD">accent</div><div class="meta"><b>accent</b> <code>#8A3B24</code><br>paper 5.57 · card 6.66</div></div>
+      <div class="sw"><div class="chip" style="background:#B9C7A8;color:#33281F">tape</div><div class="meta"><b>tape</b> <code>#B9C7A8</code><br>ink 8.06</div></div>
+    </div>
+    <div class="page">
+      <article class="card">
+        <span class="tape" aria-hidden="true"></span>
+        <div class="card-head"><span class="stamp">2026. 10. 03 토</span><span class="age">2세 7개월</span></div>
+        <p class="quote"><span class="open">“</span>Can I do it again? 한 번 더!</p>
+        <figure class="photo-plain" style="margin:0 0 12px"><span class="img park" role="img" aria-label="공원 사진 견본"></span></figure>
+        <p class="memo">미끄럼틀을 세 번째 내려오고 나서, 계단 쪽으로 뛰어가며.</p>
+        <div class="tags"><span class="tag">#놀이터</span></div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ================= C ================= -->
+  <section class="dir dir-c" aria-labelledby="c-title">
+    <h2 id="c-title">C. 수채 스크랩북</h2>
+    <p class="note">흰 종이 위 복숭아·세이지 수채 번짐. 가장 밝고 사진이 잘 살지만, 번짐이 기록마다 반복되면 「꾸민 앨범」 쪽으로 기웁니다.</p>
+    <h3>팔레트 · 바탕(paper/card) 위 대비</h3>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:#FFFCF6;color:#34302C">paper</div><div class="meta"><b>paper</b> <code>#FFFCF6</code></div></div>
+      <div class="sw"><div class="chip" style="background:#F6D8C8;color:#34302C">wash-peach</div><div class="meta"><b>wash</b> <code>#F6D8C8</code><br>ink 10.56</div></div>
+      <div class="sw"><div class="chip" style="background:#34302C;color:#FFFFFF">ink</div><div class="meta"><b>ink</b> <code>#34302C</code><br>paper 12.78 · card 13.08</div></div>
+      <div class="sw"><div class="chip" style="background:#69605A;color:#FFFFFF">ink-soft</div><div class="meta"><b>ink-soft</b> <code>#69605A</code><br>paper 5.99 · card 6.14</div></div>
+      <div class="sw"><div class="chip" style="background:#B4473C;color:#FFFFFF">accent</div><div class="meta"><b>accent</b> <code>#B4473C</code><br>paper 5.25 · 흰 글자 5.37</div></div>
+      <div class="sw"><div class="chip" style="background:#DCE6D2;color:#34302C">wash-sage</div><div class="meta"><b>wash</b> <code>#DCE6D2</code><br>ink 11.04</div></div>
+    </div>
+    <div class="page">
+      <article class="card">
+        <span class="tape" aria-hidden="true"></span>
+        <div class="card-head"><span class="stamp">2026. 10. 05 월</span><span class="age">2세 7개월</span></div>
+        <p class="quote"><span class="open">“</span>엄마 이거 봐! dinosaur 발자국이야</p>
+        <figure class="print" style="margin:12px 0;display:inline-block"><span class="img sand" role="img" aria-label="모래 위 발자국 사진 견본" style="width:200px;height:200px"></span><figcaption>모래 놀이</figcaption></figure>
+        <p class="memo">모래에 발로 꾹꾹 찍어 놓고 공룡이 왔다 갔다고.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ================= 서체 ================= -->
+  <section class="dir" aria-labelledby="t-title">
+    <h2 id="t-title">서체 견본</h2>
+    <p class="note">모두 Google Fonts, 한글+라틴 서브셋 포함(google/fonts METADATA 확인).</p>
+
+    <h3>① 아이의 말 — 손글씨, 큰 인용구 (30px)</h3>
+    <div class="spec"><div class="who">Gaegu 700 — 추천</div><div class="big gaegu">Can I do it again? 엄마 이거 봐!</div></div>
+    <div class="spec"><div class="who">Nanum Pen Script 400 (36px로 키워야 같은 크기감)</div><div class="big nanumpen">Can I do it again? 엄마 이거 봐!</div></div>
+    <div class="spec"><div class="who">Hi Melody 400</div><div class="big himelody">Can I do it again? 엄마 이거 봐!</div></div>
+
+    <h3>② 엄마의 메모 — 상황 한 줄 (15–16px)</h3>
+    <div class="spec"><div class="who">Gowun Batang 400 — 추천</div><div class="mid gbatang">미끄럼틀을 세 번째 내려오고 나서, 계단 쪽으로 뛰어가며. “again” 발음이 또렷했다.</div></div>
+    <div class="spec"><div class="who">Nanum Myeongjo 400</div><div class="mid nmyeong">미끄럼틀을 세 번째 내려오고 나서, 계단 쪽으로 뛰어가며. “again” 발음이 또렷했다.</div></div>
+
+    <h3>③ UI — 버튼·라벨·날짜 (13–16px)</h3>
+    <div class="spec"><div class="who">Gowun Dodum 400 — 추천 (단일 굵기)</div><div class="mid gdodum">저장 · 사진 추가 · 2026. 10. 03 토 · 2세 7개월 · 이번 달 12개</div></div>
+    <div class="spec"><div class="who">시스템 서체 (Apple SD Gothic Neo) — 폴백</div><div class="mid" style="font-family:system-ui,-apple-system,'Apple SD Gothic Neo',sans-serif">저장 · 사진 추가 · 2026. 10. 03 토 · 2세 7개월 · 이번 달 12개</div></div>
+  </section>
+
+  <!-- ================= 질감 상한 ================= -->
+  <section class="dir" aria-labelledby="x-title">
+    <h2 id="x-title">질감의 상한 — 여기서 멈춘다</h2>
+    <div class="anti">
+      <div class="ok">모눈은 바탕에만, 결은 5% 이하, 테이프는 카드당 1개.<br>글자 아래엔 아무 무늬도 없음.<span class="verdict">✓ 이만큼</span></div>
+      <div class="no"><div class="tt">엄마 이거 봐!</div>가죽 결 + 사선 무늬 + 이중 테두리 + 얇은 손글씨 본문.<span class="verdict">✗ 과함 — 글자가 무늬에 묻힘</span></div>
+    </div>
+  </section>
+</main>
+</body>
+</html>
