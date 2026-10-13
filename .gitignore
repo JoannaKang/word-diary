@@ -1,5 +1,20 @@
+node_modules/
+dist/
+coverage/
+*.log
+.DS_Store
+
+# 개인 데이터 — 이 저장소는 공개입니다 (결정 007)
 *.csv
+.env
+.env.*
+
+# clasp: scriptId와 Google 인증 토큰 — 절대 커밋 금지
 .clasp.json
 .clasprc.json
-.env
-node_modules/
+
+# 스크린샷은 생성물
+screenshots/
+
+# claude 에이전트 워크트리
+/.claude/worktrees/

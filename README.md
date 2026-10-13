@@ -2,6 +2,6 @@
 
 아이가 한 말을 사진과 함께 모아두는 개인용 육아일기 웹앱. 데이터는 사용자 본인의 Google 스프레드시트와 Drive에만 저장합니다.
 
-- [PRD](docs/PRD.md)
+- [PRD](docs/PRD.md) · [인수인계](HANDOVER.md) · [결정 기록](docs/decision-log.md)
 
 > 공개 저장소입니다. 아이의 이름·말·사진·시트 ID 등 개인 데이터는 커밋하지 마세요.
