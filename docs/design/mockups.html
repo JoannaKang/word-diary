@@ -248,6 +248,13 @@
   .dlg .dq .open { color: var(--accent); margin-right: 2px; }
   .img.sky { background: radial-gradient(14px 6px at 60% 35%, #F5F5F5 90%, transparent 100%), linear-gradient(#9DBBD6, #DCE8F0); }
   .img.park.hue { filter: hue-rotate(30deg); }
+  .img.sand.alt { filter: hue-rotate(-12deg) saturate(.8); }
+  .cont { margin: 0; font-size: 14px; line-height: 1.5; color: var(--ink-soft); }
+  .toast .btn { margin-left: auto; flex: none; }
+  .pager .pl { display: flex; flex-direction: column; line-height: 1.3; }
+  .pager .pl.r { align-items: flex-end; }
+  .pager .pl small { font-size: 13px; color: var(--ink-soft); }
+  .ans { display: inline-block; font-size: 12px; line-height: 20px; padding: 0 8px; border-radius: 10px; background: var(--ink-blue); color: var(--card); margin-right: 4px; }
   /* 앱 밖: 홈 화면 · 사진 선택기 · Drive · 문서 · 로그인 */
   .home-grid { position: absolute; top: 96px; left: 24px; right: 24px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px 16px; text-align: center; font-size: 12px; font-family: system-ui, -apple-system, sans-serif; }
   .app { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; }
@@ -329,7 +336,7 @@
     <ol>
       <li><a href="#v1"><b>V-1</b>대시보드 첫 장</a></li>
       <li><a href="#multi"><b>3.5</b>하루에 여러 말</a></li>
-      <li><a href="#r1"><b>R-1</b>들은 즉시 적기</a></li>
+      <li><a href="#r1"><b>R-1</b>들은 즉시 적기 · 이어서 적기</a></li>
       <li><a href="#r3"><b>R-3</b>저녁에 채우기</a></li>
       <li><a href="#r4"><b>R-4</b>사진 붙이기</a></li>
       <li><a href="#r6"><b>R-6</b>날짜 보충 · 뒤쪽 주머니</a></li>
@@ -365,10 +372,10 @@
             <p class="quote big"><span class="open">“</span>Moon이 따라와</p><span class="lnk">오늘의 말 3개 · 모두 보기</span>
           </article>
           <div class="rel"><span class="n">3</span>
-            <h3 class="sec">오늘 채울 것 <small>상황이 비어 있는 말 2개</small></h3>
+            <h3 class="sec">오늘 채울 것 <small>채울 칸이 있는 말 2개</small></h3>
             <div class="rows">
-              <div class="row"><div class="main"><div class="hq">엄마 이거 봐!</div><div class="sub">상황 · 카테고리가 비어 있어요</div></div><svg class="i"><use href="#i-r"/></svg></div>
               <div class="row"><div class="main"><div class="hq">Moon이 따라와</div><div class="sub">상황이 비어 있어요</div></div><svg class="i"><use href="#i-r"/></svg></div>
+              <div class="row"><div class="main"><div class="hq">엄마 이거 봐!</div><div class="sub">상황 · 카테고리가 비어 있어요</div></div><svg class="i"><use href="#i-r"/></svg></div>
             </div>
           </div>
         </div>
@@ -386,10 +393,10 @@
             <p class="quote big"><span class="open">“</span>Moon이 따라와</p><span class="lnk">오늘의 말 3개 · 모두 보기</span>
           </article>
           <div class="rel"><span class="n">3</span>
-            <h3 class="sec">오늘 채울 것 <small>상황이 비어 있는 말 2개</small></h3>
+            <h3 class="sec">오늘 채울 것 <small>채울 칸이 있는 말 2개</small></h3>
             <div class="rows">
-              <div class="row"><div class="main"><div class="hq">엄마 이거 봐!</div><div class="sub">상황 · 카테고리가 비어 있어요</div></div><svg class="i"><use href="#i-r"/></svg></div>
               <div class="row"><div class="main"><div class="hq">Moon이 따라와</div><div class="sub">상황이 비어 있어요</div></div><svg class="i"><use href="#i-r"/></svg></div>
+              <div class="row"><div class="main"><div class="hq">엄마 이거 봐!</div><div class="sub">상황 · 카테고리가 비어 있어요</div></div><svg class="i"><use href="#i-r"/></svg></div>
             </div>
           </div>
         </div>
@@ -403,27 +410,27 @@
           <div class="rel" style="margin-top:8px"><span class="n">4</span>
             <h3 class="sec" style="margin-top:8px">10월 <small>2세 7개월 · 이번 달의 말</small></h3>
             <div class="rows">
-              <div class="row"><span class="rd">10. 13 화</span><div class="main hq-l"><div class="hq">엄마 이거 봐!</div><span class="xn">외 2개</span></div></div>
+              <div class="row"><span class="rd">10. 13 화</span><div class="main hq-l"><div class="hq">Moon이 따라와</div><span class="xn">외 2개</span></div></div>
               <div class="row"><span class="rd">10. 12 월</span><div class="main hq-l"><div class="hq">Look, 비 와요</div></div></div>
               <div class="row"><span class="rd">10. 11 일</span><div class="main hq-l"><div class="hq">아빠 train 타고 가요?</div></div></div>
-              <div class="row"><span class="rd">10. 05 월</span><div class="main hq-l"><div class="hq">엄마 이거 봐! …</div></div></div>
+              <div class="row"><span class="rd">10. 05 월</span><div class="main hq-l"><div class="hq">크앙!</div><span class="xn">외 2개</span></div></div>
             </div>
             <p class="sentence">10월에는 말 9개를 적었어요 · <span class="lnk">10월 장 펼치기</span></p>
           </div>
           <div class="rel"><span class="n">5</span>
             <h3 class="sec">사진이 있는 순간</h3>
             <div class="prints">
-              <div class="print"><span class="img sand"></span><div class="cq">엄마 이거 봐! …</div></div>
               <div class="print"><span class="img park"></span><div class="cq">Can I do it again?</div></div>
               <div class="print"><span class="img rain"></span><div class="cq">Look, 비 와요</div></div>
               <div class="print"><span class="img train"></span><div class="cq">train 타고 가요?</div></div>
+              <div class="print"><span class="img sand"></span><div class="cq">공룡 발자국이야</div></div>
             </div>
           </div>
         </div>
         <span class="annl mid">스크롤 ↓ 두 번째 화면</span>
         <div class="dock"><span class="write"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
       </div></div>
-      <figcaption>3. 내려가면 이번 달의 말(④)과 사진이 있는 순간(⑤). ④는 하루에 한 줄(그날 첫 말 + 「외 2개」). 숫자는 「말 9개를 적었어요」처럼 문장 속에만 있어요.<span class="taps">스크롤만 · 탭 0</span></figcaption>
+      <figcaption>3. 내려가면 이번 달의 말(④)과 사진이 있는 순간(⑤). ④는 하루에 한 줄(그날 가장 나중에 적은 말 + 「외 2개」), 최근 날이 위. 숫자는 「말 9개를 적었어요」처럼 문장 속에만 있어요.<span class="taps">스크롤만 · 탭 0</span></figcaption>
     </figure>
     <figure class="step">
       <div class="phone"><div class="screen">
@@ -461,7 +468,7 @@
             <ol class="toc-l">
               <li><span class="m">10월</span><span class="a">2세 7개월</span><span class="dots"></span><span class="n2">9</span></li>
               <li><span class="m">9월</span><span class="a">2세 6개월</span><span class="dots"></span><span class="n2">12</span></li>
-              <li><span class="m">8월</span><span class="a">2세 5개월</span><span class="dots"></span><span class="n2">6</span></li>
+              <li><span class="m">8월</span><span class="a">2세 5개월</span><span class="dots"></span><span class="n2">9</span></li>
               <li><span class="m">7월</span><span class="a">2세 4개월</span><span class="dots"></span><span class="n2">3</span></li>
               <li><span class="m">뒤쪽 주머니</span><span class="a">날짜 모름</span><span class="dots"></span><span class="n2">8</span></li>
             </ol>
@@ -486,8 +493,8 @@
 <!-- ======================= 하루에 여러 말 ======================= -->
 <section class="sc" id="multi" aria-labelledby="multi-h">
   <h2 id="multi-h"><span class="pill">3.5</span>하루에 여러 말</h2>
-  <p class="sit">날짜 머리글은 하루에 한 번, 그 아래로 그날 말이 먼저 적은 순서대로 이어져요. 말은 하나씩 따로 눌러요.</p>
-  <p class="note">예시: 10월 13일 화요일 · 2세 7개월, 적은 순 — ⓐ 엄마 이거 봐! (메모·카테고리 없음) · ⓑ Can I do it again? (메모, 놀이하며 만든 말, 사진 2장) · ⓒ Moon이 따라와 (메모 없음). 적은 시각은 순서를 정하는 데만 쓰고 어디에도 보이지 않아요(Q12).</p>
+  <p class="sit">날짜 머리글은 하루에 한 번, 그 아래로 그날 말이 가장 나중에 적은 것부터 이어져요. 말은 하나씩 따로 눌러요.</p>
+  <p class="note">모든 화면이 「위 = 더 최근」(날짜 사이도, 하루 안도). 예시: 10월 13일 화요일 · 2세 7개월, 적은 순 — ⓐ 엄마 이거 봐! (메모·카테고리 없음) · ⓑ Can I do it again? (메모, 놀이하며 만든 말, 사진 2장) · ⓒ Moon이 따라와 (메모 없음). 적은 시각은 순서를 정하는 데만 쓰고 어디에도 보이지 않아요.</p>
   <p class="sub-h">대시보드에서</p>
   <div class="strip" tabindex="0" role="region" aria-label="하루에 여러 말 — 대시보드 목업 5장, 옆으로 넘겨 보기">
     <figure class="step">
@@ -500,7 +507,7 @@
             <p class="quote big"><span class="open">“</span>엄마 이거 봐!</p>
           </article>
           <div class="rel"><span class="n">3</span>
-            <h3 class="sec">오늘 채울 것 <small>상황이 비어 있는 말 1개</small></h3>
+            <h3 class="sec">오늘 채울 것 <small>채울 칸이 있는 말 1개</small></h3>
             <div class="rows">
               <div class="row"><div class="main"><div class="hq">엄마 이거 봐!</div><div class="sub">상황 · 카테고리가 비어 있어요</div></div><svg class="i"><use href="#i-r"/></svg></div>
             </div>
@@ -508,7 +515,7 @@
         </div>
         <div class="dock"><span class="write"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
       </div></div>
-      <figcaption>1. 오늘 말이 <b>하나</b>일 때 — ②에 그 말 하나, 「모두 보기」 줄은 없어요.<span class="taps">탭 0</span></figcaption>
+      <figcaption>1. 오늘 말이 <b>하나</b>일 때 — ②에 그 말 하나, 「모두 보기」 줄은 없어요. ③은 상황이나 카테고리가 빈 말(줄 아래 빈 칸 이름).<span class="taps">탭 0</span></figcaption>
     </figure>
     <figure class="step">
       <div class="phone"><div class="screen">
@@ -520,16 +527,16 @@
             <p class="quote big"><span class="open">“</span>Moon이 따라와</p><span class="lnk">오늘의 말 3개 · 모두 보기</span>
           </article>
           <div class="rel"><span class="n">3</span>
-            <h3 class="sec">오늘 채울 것 <small>상황이 비어 있는 말 2개</small></h3>
+            <h3 class="sec">오늘 채울 것 <small>채울 칸이 있는 말 2개</small></h3>
             <div class="rows">
-              <div class="row"><div class="main"><div class="hq">엄마 이거 봐!</div><div class="sub">상황 · 카테고리가 비어 있어요</div></div><svg class="i"><use href="#i-r"/></svg></div>
               <div class="row"><div class="main"><div class="hq">Moon이 따라와</div><div class="sub">상황이 비어 있어요</div></div><svg class="i"><use href="#i-r"/></svg></div>
+              <div class="row"><div class="main"><div class="hq">엄마 이거 봐!</div><div class="sub">상황 · 카테고리가 비어 있어요</div></div><svg class="i"><use href="#i-r"/></svg></div>
             </div>
           </div>
         </div>
         <div class="dock"><span class="write"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
       </div></div>
-      <figcaption>2. 오늘 말이 <b>셋</b>일 때 — ②는 가장 나중에 적은 말 하나만 크게, 아래 「오늘의 말 3개 · 모두 보기」(→ 일기장 그날 묶음). ③은 적은 순, 메모가 실제로 빈 말만.<span class="taps">탭 1 → 그날 묶음</span></figcaption>
+      <figcaption>2. 오늘 말이 <b>셋</b>일 때 — ②는 가장 나중에 적은 말 하나만 크게, 아래 「오늘의 말 3개 · 모두 보기」(→ 일기장 그날 묶음). ③은 최근 적은 것이 위.<span class="taps">탭 1 → 그날 묶음</span></figcaption>
     </figure>
     <figure class="step">
       <div class="phone"><div class="screen">
@@ -537,10 +544,10 @@
           <div class="rel" style="margin-top:8px"><span class="n">4</span>
             <h3 class="sec" style="margin-top:8px">10월 <small>2세 7개월 · 이번 달의 말</small></h3>
             <div class="rows">
-              <div class="row"><span class="rd">10. 13 화</span><div class="main hq-l"><div class="hq">엄마 이거 봐!</div><span class="xn">외 2개</span></div></div>
+              <div class="row"><span class="rd">10. 13 화</span><div class="main hq-l"><div class="hq">Moon이 따라와</div><span class="xn">외 2개</span></div></div>
               <div class="row"><span class="rd">10. 12 월</span><div class="main hq-l"><div class="hq">Look, 비 와요</div></div></div>
               <div class="row"><span class="rd">10. 11 일</span><div class="main hq-l"><div class="hq">아빠 train 타고 가요?</div></div></div>
-              <div class="row"><span class="rd">10. 05 월</span><div class="main hq-l"><div class="hq">엄마 이거 봐! …</div></div></div>
+              <div class="row"><span class="rd">10. 05 월</span><div class="main hq-l"><div class="hq">크앙!</div><span class="xn">외 2개</span></div></div>
             </div>
             <p class="sentence">10월에는 말 9개를 적었어요 · <span class="lnk">10월 장 펼치기</span></p>
           </div>
@@ -548,7 +555,7 @@
         <span class="annl mid">스크롤 ↓ 두 번째 화면</span>
         <div class="dock"><span class="write"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
       </div></div>
-      <figcaption>3. ④ 이번 달 — <b>하루에 한 줄</b>, 그날 처음 적은 말 + 「외 2개」. ②(나중 말)와 문장이 겹치지 않아요. 여러 줄로 적은 기록(10월 5일)은 첫 줄 + 「…」.<span class="taps">탭 1 → 그날 묶음 → 탭 1 → 한 장</span></figcaption>
+      <figcaption>3. ④ 이번 달 — <b>하루에 한 줄</b>, 그날 가장 나중에 적은 말(책갈피가 있으면 그 말) + 「외 2개」. 최근 날이 위.<span class="taps">탭 1 → 그날 묶음 → 탭 1 → 한 장</span></figcaption>
     </figure>
     <figure class="step">
       <div class="phone"><div class="screen">
@@ -560,11 +567,11 @@
             <p class="quote big"><span class="open">“</span>내일 또 와요</p><span class="lnk">오늘의 말 8개 · 모두 보기</span>
           </article>
           <div class="rel"><span class="n">3</span>
-            <h3 class="sec">오늘 채울 것 <small>상황이 비어 있는 말 5개</small></h3>
+            <h3 class="sec">오늘 채울 것 <small>채울 칸이 있는 말 5개</small></h3>
             <div class="rows">
-              <div class="row"><div class="main"><div class="hq">엄마 이거 봐!</div><div class="sub">상황 · 카테고리가 비어 있어요</div></div><svg class="i"><use href="#i-r"/></svg></div>
-              <div class="row"><div class="main"><div class="hq">No no, 내 차례야</div><div class="sub">상황이 비어 있어요</div></div><svg class="i"><use href="#i-r"/></svg></div>
-              <div class="row"><div class="main"><div class="hq">Big truck 지나가요</div><div class="sub">상황이 비어 있어요</div></div><svg class="i"><use href="#i-r"/></svg></div>
+              <div class="row"><div class="main"><div class="hq">내일 또 와요</div><div class="sub">상황이 비어 있어요</div></div><svg class="i"><use href="#i-r"/></svg></div>
+              <div class="row"><div class="main"><div class="hq">엄마 sleepy 해요?</div><div class="sub">상황이 비어 있어요</div></div><svg class="i"><use href="#i-r"/></svg></div>
+              <div class="row"><div class="main"><div class="hq">Moon이 따라와</div><div class="sub">상황이 비어 있어요</div></div><svg class="i"><use href="#i-r"/></svg></div>
             </div>
             <span class="lnk">2개 더 보기</span>
           </div>
@@ -579,10 +586,10 @@
           <div class="rel" style="margin-top:8px"><span class="n">4</span>
             <h3 class="sec" style="margin-top:8px">10월 <small>2세 7개월 · 이번 달의 말</small></h3>
             <div class="rows">
-              <div class="row"><span class="rd">10. 13 화</span><div class="main hq-l"><div class="hq">엄마 이거 봐!</div><span class="xn">외 7개</span></div></div>
+              <div class="row"><span class="rd">10. 13 화</span><div class="main hq-l"><div class="hq">내일 또 와요</div><span class="xn">외 7개</span></div></div>
               <div class="row"><span class="rd">10. 12 월</span><div class="main hq-l"><div class="hq">Look, 비 와요</div></div></div>
               <div class="row"><span class="rd">10. 11 일</span><div class="main hq-l"><div class="hq">아빠 train 타고 가요?</div></div></div>
-              <div class="row"><span class="rd">10. 05 월</span><div class="main hq-l"><div class="hq">엄마 이거 봐! …</div></div></div>
+              <div class="row"><span class="rd">10. 05 월</span><div class="main hq-l"><div class="hq">크앙!</div><span class="xn">외 2개</span></div></div>
             </div>
             <p class="sentence">10월에는 말 14개를 적었어요 · <span class="lnk">10월 장 펼치기</span></p>
           </div>
@@ -590,71 +597,79 @@
         <span class="annl mid">스크롤 ↓ 두 번째 화면</span>
         <div class="dock"><span class="write"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
       </div></div>
-      <figcaption>5. 같은 날(8개)의 ④ — 첫 줄 「엄마 이거 봐! 외 7개」. 폭발한 하루가 ④를 다 차지하지 않아요.<span class="taps">스크롤만</span></figcaption>
+      <figcaption>5. 같은 날(8개)의 ④ — 첫 줄 「내일 또 와요 외 7개」. 폭발한 하루가 ④를 다 차지하지 않아요.<span class="taps">스크롤만</span></figcaption>
     </figure>
   </div>
   <p class="sub-h">일기장에서</p>
-  <div class="strip" tabindex="0" role="region" aria-label="하루에 여러 말 — 일기장 목업 6장, 옆으로 넘겨 보기">
+  <div class="strip" tabindex="0" role="region" aria-label="하루에 여러 말 — 일기장 목업 7장, 옆으로 넘겨 보기">
     <figure class="step">
       <div class="phone"><div class="screen">
         <div class="ct">
+          <div class="grp">10월 13일 화요일 · 2세 7개월</div>
+          <div class="day"><div class="it"><p class="quote">Moon이 따라와</p></div><div class="it"><p class="quote">Can I do it again?</p><div class="ph3"><div class="print"><span class="img park"></span></div><div class="print"><span class="img park hue"></span></div></div><p class="memo">미끄럼틀을 세 번째 내려오고 나서.</p></div><div class="it"><p class="quote">엄마 이거 봐!</p></div></div>
           <div class="grp">10월 12일 월요일 · 2세 7개월</div>
           <div class="day"><div class="it"><p class="quote">Look, 비 와요</p><p class="memo">창문에 붙어 서서, 우산 꺼내 달라며.</p></div></div>
-          <div class="grp">10월 13일 화요일 · 2세 7개월</div>
-          <div class="day"><div class="it"><p class="quote">엄마 이거 봐!</p></div><div class="it"><p class="quote">Can I do it again?</p><div class="ph3"><div class="print"><span class="img park"></span></div><div class="print"><span class="img park hue"></span></div></div><p class="memo">미끄럼틀을 세 번째 내려오고 나서.</p></div><div class="it"><p class="quote">Moon이 따라와</p></div></div>
         </div>
-        <span class="annl mid">10월 장 · 「모두 보기」로 온 자리</span>
+        <span class="annl mid">10월 장 맨 위 · 「모두 보기」로 온 자리</span>
         <div class="dock"><span class="write"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
       </div></div>
-      <figcaption>6. 일기장 10월 장 — 날짜 머리글은 <b>하루에 한 번</b>, 그 아래 먼저 적은 말부터. 말 사이엔 옅은 구분 하나, 도장·나이를 반복하지 않아요. 사진은 그 말 바로 아래.<span class="taps">말 하나 탭 → 한 장</span></figcaption>
+      <figcaption>6. 일기장 10월 장 — <b>위 = 더 최근</b>. 최근 날이 위, 날짜 머리글은 하루에 한 번, 그 아래 나중에 적은 말부터. 말 사이엔 옅은 구분 하나, 사진은 그 말 바로 아래.<span class="taps">말 하나 탭 → 한 장</span></figcaption>
     </figure>
     <figure class="step">
       <div class="phone"><div class="screen">
         <div class="ct">
           <div class="grp stuck">10월 13일 화요일 · 2세 7개월</div>
-          <div class="day"><div class="it"><span class="kind">행동</span><p class="act">블록으로 기차역을 만들고 역마다 이름을 붙임</p></div><div class="it"><p class="quote">Moon이 따라와</p></div><div class="it"><p class="quote">엄마 sleepy 해요?</p></div><div class="it"><p class="quote">내일 또 와요</p></div></div>
+          <div class="day"><div class="it"><p class="quote">내일 또 와요</p></div><div class="it"><p class="quote">엄마 sleepy 해요?</p></div><div class="it"><p class="quote">Moon이 따라와</p></div><div class="it"><span class="kind">행동</span><p class="act">블록으로 기차역을 만들고 역마다 이름을 붙임</p></div></div>
         </div>
         <span class="annl" style="top:480px;left:16px;right:16px">↑ 날짜 머리글이 화면 위에 붙어 따라와요</span>
         <div class="dock"><span class="write"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
       </div></div>
-      <figcaption>7. 하루 8개 — <b>접지 않고</b> 다 보여요. 스크롤 중간(5~8번째)에도 날짜 머리글이 화면 위에 붙어 「지금 어느 날」인지 알려 줘요. 날마다 「말 8개」 같은 수는 붙이지 않아요.<span class="taps">스크롤</span></figcaption>
+      <figcaption>7. 하루 8개 — <b>접지 않고</b> 다 보여요. 묶음이 화면보다 길면 날짜 머리글이 화면 위에 붙어 「지금 어느 날」인지 알려 줘요. 날마다 「말 8개」 같은 수는 붙이지 않아요.<span class="taps">스크롤</span></figcaption>
     </figure>
     <figure class="step">
       <div class="phone"><div class="screen">
         <div class="ct">
           <div class="grp">8월 28일 금요일 · 2세 5개월</div>
-          <div class="day"><div class="it"><p class="quote">Bye bye 비행기</p><div class="ph3"><div class="print"><span class="img sky"></span></div></div></div><div class="it"><span class="kind">행동</span><p class="act">할머니 가방을 문까지 끌어다 드림</p></div><div class="it"><p class="quote">또 와요</p><p class="memo">할머니 배웅하며.</p></div><div class="it"><span class="kind">에피소드</span><p class="act">「작은 별」을 「작은 비행기」로 바꿔 부름</p><div class="ph3"><div class="print"><span class="img book"></span></div><div class="print"><span class="img cake"></span></div><div class="print"><span class="img sky"></span></div></div><span class="ph-more">외 2장</span></div></div>
+          <div class="day"><div class="it"><span class="kind">에피소드</span><p class="act">「작은 별」을 「작은 비행기」로 바꿔 부름</p><div class="ph3"><div class="print"><span class="img book"></span></div><div class="print"><span class="img cake"></span></div><div class="print"><span class="img sky"></span></div></div><span class="ph-more">외 2장</span></div><div class="it"><p class="quote">또 와요</p><p class="memo">할머니 배웅하며.</p></div><div class="it"><span class="kind">행동</span><p class="act">할머니 가방을 문까지 끌어다 드림</p></div><div class="it"><p class="quote">Bye bye 비행기</p><div class="ph3"><div class="print"><span class="img sky"></span></div></div></div></div>
         </div>
         <div class="dock"><span class="write"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
       </div></div>
-      <figcaption>8. 사진·유형이 섞인 날 — 순서는 유형과 상관없이 적은 순. <b>말만 손글씨</b>, 행동·에피소드는 엄마 글씨 + 작은 유형 표시. 사진 4장 이상이면 3장 + 「외 2장」.<span class="taps">스크롤</span></figcaption>
+      <figcaption>8. 사진·유형이 섞인 날 — 순서는 유형과 상관없이 나중에 적은 것이 위. <b>말만 손글씨</b>, 행동·에피소드는 엄마 글씨 + 작은 유형 표시. 사진 4장 이상이면 3장 + 「외 2장」.<span class="taps">스크롤</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct">
+          <div class="grp">10월 5일 월요일 · 2세 7개월</div>
+          <div class="day"><div class="it"><p class="quote">크앙!</p></div><div class="it"><p class="quote">공룡 발자국이야</p><div class="ph3"><div class="print"><span class="img sand"></span></div></div></div><div class="it"><p class="quote">엄마 이거 봐!</p><div class="ph3"><div class="print"><span class="img sand alt"></span></div></div><p class="memo">모래놀이터에서 발자국을 찍으며.</p></div></div>
+        </div>
+        <span class="annl" style="top:560px;left:16px;right:16px">「이어서 적기」로 나눠 적은 한 장면이 아래에서 위로 읽혀요(엄마 이거 봐! → 공룡 발자국이야 → 크앙!) — Q14</span>
+        <div class="dock"><span class="write"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
+      </div></div>
+      <figcaption>9a. 연달아 한 말을 <b>「이어서 적기」로 따로</b> 적은 장면 — 말마다 사진을 따로 붙일 수 있어요. 이어받은 같은 메모는 묶음 맨 아래(그 장면의 첫 말) 밑에 한 번만.<span class="taps">스크롤</span></figcaption>
     </figure>
     <figure class="step">
       <div class="phone"><div class="screen">
         <div class="ct">
           <div class="grp">10월 3일 토요일 · 2세 7개월</div>
-          <div class="day"><div class="it"><p class="quote">한 번 더!</p></div></div>
-          <div class="grp">10월 5일 월요일 · 2세 7개월</div>
-          <div class="day"><div class="it"><p class="quote">엄마 이거 봐!</p><p class="quote">공룡 발자국이야</p><p class="quote">크앙!</p><div class="ph3"><div class="print"><span class="img sand"></span></div></div><p class="memo">모래놀이터에서 발자국을 찍으며.</p></div></div>
+          <div class="day"><div class="it"><p class="quote">한 번 더!</p><p class="quote">또 또!</p></div></div>
         </div>
         <div class="dock"><span class="write"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
       </div></div>
-      <figcaption>9. 같은 순간에 연달아 한 말을 <b>한 기록에 줄을 바꿔</b> 적은 경우(Q13) — 줄마다 손글씨로 다 보이고, 메모·사진은 한 번. 한 줄만 들어가는 자리(대시보드·찾기)에선 첫 줄 + 「…」.<span class="taps">스크롤</span></figcaption>
+      <figcaption>9b. <b>한 기록에 여러 줄</b>로 적은 말도 그대로 그려요(이관 기록·저장이 막힌 때). 줄은 적은 그대로 위 → 아래, 줄마다 손글씨. 따로 안내하지는 않아요.<span class="taps">스크롤</span></figcaption>
     </figure>
     <figure class="step">
       <div class="phone"><div class="screen">
         <div class="ct">
-          <div class="topbar"><span class="back"><svg class="i"><use href="#i-l"/></svg>펼침면</span><span class="ib"><svg class="i"><use href="#i-search"/></svg></span></div>
-          <div class="chap">10월</div>
-          <p class="sub" style="font-size:15px;margin:0 0 4px">2세 7개월 · 말 9개</p>
+          <div class="grp">10월 3일 토요일 · 2세 7개월</div>
+          <div class="day"><div class="it"><p class="quote">한 번 더!</p><p class="quote">또 또!</p></div></div>
           <div class="grp">10월 어느 날 · 2세 7개월</div>
           <div class="day"><div class="it"><p class="quote">우산 내 거야</p></div><div class="it"><p class="quote">Rainbow 어디 갔어?</p></div></div>
-          <div class="grp">10월 3일 토요일 · 2세 7개월</div>
-          <div class="day"><div class="it"><p class="quote">한 번 더!</p></div></div>
+          <div class="pager"><span></span><span class="tap">9월로<svg class="i"><use href="#i-r"/></svg></span></div>
         </div>
+        <span class="annl mid">10월 장 끝까지 스크롤 ↓</span>
         <div class="dock"><span class="write"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
       </div></div>
-      <figcaption>10. 장 맨 앞 — 달만 아는 말 2개는 「10월 어느 날」 머리글 <b>하나</b> 아래. 나이는 머리글에만(값은 Q6). 장 머리 수 「말 9개」에 포함돼요.<span class="taps">탭 1 (목차에서)</span></figcaption>
+      <figcaption>10. 장 <b>맨 끝</b> — 달만 아는 말은 1일 쪽 묶음 아래 「10월 어느 날」 하나에 모여요(맨 위에 두면 가장 최근 말처럼 읽혀서). 나이는 머리글에만(Q6). 장 끝 단추는 「9월로」뿐 — 이번 달이라 더 최근 장이 없어요.<span class="taps">탭 1 → 9월 장</span></figcaption>
     </figure>
     <figure class="step">
       <div class="phone"><div class="screen">
@@ -681,11 +696,11 @@
           <p class="quote big"><span class="open">“</span>Can I do it again?</p>
           <p class="memo">미끄럼틀을 세 번째 내려오고 나서.</p>
           <div class="tags"><span class="cat">놀이하며 만든 말</span></div>
-          <div class="pager" style="position:absolute;left:16px;right:16px;bottom:46px"><span><svg class="i"><use href="#i-l"/></svg>이전 말</span><span>다음 말<svg class="i"><use href="#i-r"/></svg></span></div>
+          <div class="pager" style="position:absolute;left:16px;right:16px;bottom:46px"><span><svg class="i"><use href="#i-l"/></svg>더 최근 말</span><span>더 예전 말<svg class="i"><use href="#i-r"/></svg></span></div>
         </div>
-        <span class="annl" style="top:600px;left:16px;right:16px">이전 말 = 엄마 이거 봐! · 다음 말 = Moon이 따라와 (같은 날이라 날짜 없이)</span>
+        <span class="annl" style="top:600px;left:16px;right:16px">더 최근 = Moon이 따라와 · 더 예전 = 엄마 이거 봐! (같은 날이라 날짜 없이)</span>
       </div></div>
-      <figcaption>12. 한 장 — 하루의 <b>가운데 말</b>. 「이전 말 · 다음 말」은 들어온 목록(여기선 10월 장)의 순서대로. 적은 시각은 어디에도 없어요.<span class="taps">탭 1</span></figcaption>
+      <figcaption>12. 한 장 — 하루의 <b>가운데 말</b>. 아래 단추는 「← 더 최근 말 · 더 예전 말 →」, 들어온 목록(여기선 10월 장)의 순서대로. 「이전·다음」은 최근이 위인 목록에서 방향이 갈려 쓰지 않아요. 적은 시각은 어디에도 없어요.<span class="taps">탭 1</span></figcaption>
     </figure>
     <figure class="step">
       <div class="phone"><div class="screen">
@@ -694,10 +709,10 @@
           <div class="card-head" style="margin-top:8px"><span class="stamp">2026. 08. 22 토</span><span class="age">2세 5개월</span></div>
           <p class="quote big"><span class="open">“</span>아니야, 내 거야</p>
           <p class="memo">놀이터 모래 삽을 두고.</p>
-          <div class="pager" style="position:absolute;left:16px;right:16px;bottom:46px"><span><svg class="i"><use href="#i-l"/></svg>이전 말</span><span class="tap">다음 말 · 8월 28일<svg class="i"><use href="#i-r"/></svg></span></div>
+          <div class="pager" style="position:absolute;left:16px;right:16px;bottom:46px"><span><svg class="i"><use href="#i-l"/></svg><span class="pl">더 최근 말<small>8월 28일</small></span></span><span class="tap"><span class="pl r">더 예전 말<small>8월 19일</small></span><svg class="i"><use href="#i-r"/></svg></span></div>
         </div>
       </div></div>
-      <figcaption>13. 다음 말이 <b>다른 날</b>이면 단추에 날짜를 붙여요: 「다음 말 · 8월 28일」. 일기장에서 왔으면 날을 넘어 장 끝까지 이어져요.<span class="taps">탭 1</span></figcaption>
+      <figcaption>13. 옆 말이 <b>다른 날</b>이면 단추에 날짜를 붙여요: 「더 최근 말 · 8월 28일」 / 「더 예전 말 · 8월 19일」. 일기장에서 왔으면 날을 넘어 장 끝까지 이어져요.<span class="taps">탭 1</span></figcaption>
     </figure>
     <figure class="step">
       <div class="phone"><div class="screen">
@@ -707,11 +722,11 @@
           <div class="card-head" style="margin-top:16px"><span class="stamp">2026. 08. 28 금</span><span class="age">2세 5개월</span></div>
           <span class="kind" style="margin-top:12px">에피소드</span>
           <p class="act" style="font-size:20px">「작은 별」을 「작은 비행기」로 바꿔 부름</p>
-          <div class="pager" style="position:absolute;left:16px;right:16px;bottom:46px"><span><svg class="i"><use href="#i-l"/></svg>이전 말</span><span></span></div>
+          <div class="pager" style="position:absolute;left:16px;right:16px;bottom:46px"><span></span><span>더 예전 말<svg class="i"><use href="#i-r"/></svg></span></div>
         </div>
-        <span class="annl" style="top:560px;left:16px;right:16px">장 끝 — 「다음 말」 단추를 감춰요. 달 넘기기는 장 화면의 일</span>
+        <span class="annl" style="top:560px;left:16px;right:16px">장 맨 위 기록 — 「더 최근 말」 단추를 감춰요. 달 넘기기는 장 화면의 일</span>
       </div></div>
-      <figcaption>14. 8월 장의 <b>마지막 기록</b> — 다음 단추가 없어요. 에피소드라 손글씨가 아닌 엄마 글씨.<span class="taps">탭 0</span></figcaption>
+      <figcaption>14. 8월 장의 <b>맨 위 기록</b>(가장 최근 날의 가장 나중 말) — 「더 최근 말」이 없어요. 에피소드라 손글씨가 아닌 엄마 글씨.<span class="taps">탭 0</span></figcaption>
     </figure>
     <figure class="step">
       <div class="phone"><div class="screen">
@@ -735,23 +750,24 @@
     </figure>
     <figure class="step">
       <div class="phone"><div class="screen">
-        <div class="ct"><div class="dh" style="margin-top:56px"><div class="d1">2026년 10월 13일 화요일</div></div></div>
+        <div class="ct"><div class="dh" style="margin-top:56px"><div class="d1">10월 13일 화요일</div></div></div>
         <div class="scrim"></div>
         <div class="sheet kbup">
           <span class="grab"></span>
           <span class="fdate">10월 13일 화요일 · 2세 7개월<svg class="i s"><use href="#i-d"/></svg></span>
-          <div class="fld fq"><div class="lbl">아이의 말</div><div class="ln"><span class="caret"></span><span class="ph">들은 그대로 적어 주세요<br>이어서 한 말은 줄을 바꿔 적어요</span></div></div>
+          <div class="fld fq"><div class="lbl">아이의 말</div><div class="ln"><span class="caret"></span><span class="ph">들은 그대로 적어 주세요</span></div></div>
           <div class="fld fm"><div class="lbl">여백 메모</div><div class="ln"><span class="ph">어떤 순간이었나요? 나중에 적어도 돼요</span></div></div>
+          <div class="chips"><span class="chip">엄마에게 해준 말</span><span class="chip">놀이하며 만든 말</span><span class="chip">좋아하는 것들</span></div>
           <div class="acts-bar"><span class="ibo"><svg class="i"><use href="#i-cam"/></svg></span><span class="save">적어 두기</span></div>
         </div>
         <div class="kb"></div>
       </div></div>
-      <figcaption>17. 빠른 기록 — 빈 말 칸 안내가 두 줄: 「이어서 한 말은 줄을 바꿔 적어요」. 입력을 시작하면 사라지고, 키보드 줄바꿈이 곧 「다음 말」(Q13).<span class="taps">탭 0</span></figcaption>
+      <figcaption>17. 빠른 기록 — 말 칸 안내는 한 줄 「들은 그대로 적어 주세요」. 연달아 한 말은 저장 뒤 「이어서 적기」로 따로 적어요(<a href="#r1">R-1 흐름 C</a>). 카테고리는 골라도 되고 비워도 돼요.<span class="taps">탭 0</span></figcaption>
     </figure>
   </div>
   <div class="crit">
-    <div><b>성공 기준</b><ul><li>날짜·나이·도장은 하루에 한 번. 말 사이엔 옅은 구분 하나, 누르는 단위는 기록 하나(44px 이상).</li><li>대시보드는 ② 한 문장 + 「오늘의 말 N개」, ③ 3줄까지, ④ 하루 한 줄 — 말이 폭발한 날에도 첫 화면 모양이 같아요.</li><li>「이 말 지우기」는 그 말 하나만. 같은 날 다른 말이 남는다고 알려 줘요.</li></ul></div>
-    <div><b>정하지 않은 것</b>장 안 순서(1일부터 · 먼저 적은 말 위)는 Q11, 시각을 숨기는 것은 Q12, 연달아 한 말을 한 기록에 줄바꿈으로 적는 것은 Q13. 넓은 화면의 일기장(왼쪽 장 · 오른쪽 한 장)은 이번 목업에서 뺐어요.</div>
+    <div><b>성공 기준</b><ul><li>위 = 더 최근, 한 규칙. 날짜·나이·도장은 하루에 한 번, 말 사이엔 옅은 구분 하나, 누르는 단위는 기록 하나(44px 이상).</li><li>대시보드는 ② 한 문장 + 「오늘의 말 N개」, ③ 3줄까지, ④ 하루 한 줄 — 말이 폭발한 날에도 첫 화면 모양이 같아요.</li><li>「이 말 지우기」는 그 말 하나만. 같은 날 다른 말이 남는다고 알려 줘요.</li></ul></div>
+    <div><b>정하지 않은 것</b>「이어서 적기」로 나눠 적은 한 장면이 아래에서 위로 읽히는 것을 그대로 둘지는 Q14. 넓은 화면의 일기장은 P2라 그리지 않았어요.</div>
   </div>
 </section>
 
@@ -835,14 +851,117 @@
             <p class="memo" style="color:var(--ink-soft)">여백 메모는 저녁에 채워도 돼요.</p>
           </article>
         </div>
-        <div class="toast"><span class="stamp">10. 13</span><span>적어 두었어요 · 10월 13일 · 2세 7개월</span></div>
+        <div class="toast"><span>적어 두었어요<br>10월 13일 · 2세 7개월</span><span class="btn ghost">이어서 적기</span></div>
         <div class="dock"><span class="write"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
       </div></div>
-      <figcaption>5. 「적어 두었어요」 확인 줄. 시트가 내려가고 맨 위에 「방금 적은 말」로 보여요.<span class="taps">총 탭 3번 · 약 20초 (목표 30초)</span></figcaption>
+      <figcaption>5. 「적어 두었어요」 확인 줄 + 오른쪽 「이어서 적기」(10초 머물러요, 시각은 없어요). 시트가 내려가고 맨 위에 「방금 적은 말」로 보여요.<span class="taps">총 탭 3번 · 약 20초 (목표 30초)</span></figcaption>
+    </figure>
+  </div>
+  <p class="sub-h">흐름 C — 연달아 한 말: 이어서 적기</p>
+  <div class="strip" tabindex="0" role="region" aria-label="R-1 흐름 C 목업 6장, 옆으로 넘겨 보기">
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct">
+          <div class="topbar"><span class="brand">말 일기</span><span class="ibs"><span class="ib"><svg class="i"><use href="#i-search"/></svg></span><span class="ib"><svg class="i"><use href="#i-set"/></svg></span></span></div>
+          <div class="dh"><div class="d1">2026년 10월 13일 화요일</div><div class="d2">아이 · 2세 7개월</div></div>
+          <article class="card"><span class="tape" aria-hidden="true"></span>
+            <div class="card-head"><span class="stamp">2026. 10. 13 화</span><span class="age">방금 적은 말 · 2세 7개월</span></div>
+            <p class="quote big"><span class="open">“</span>Can I do it again?</p>
+          </article>
+        </div>
+        <div class="toast"><span>적어 두었어요<br>10월 13일 · 2세 7개월</span><span class="btn ghost tap">이어서 적기</span></div>
+        <div class="dock"><span class="write"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
+      </div></div>
+      <figcaption>C1. 아이가 바로 이어 말해요. 확인 줄의 「이어서 적기」 — 「적기」 바로 위 엄지 자리, 44px 이상.<span class="taps">탭 1 · 누적 4 · 약 21초</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct"><div class="dh" style="margin-top:56px"><div class="d1">10월 13일 화요일</div></div></div>
+        <div class="scrim"></div>
+        <div class="sheet kbup">
+          <span class="grab"></span>
+          <span class="fdate">10월 13일 화요일 · 2세 7개월<svg class="i s"><use href="#i-d"/></svg></span>
+          <p class="cont">이어서 적는 중 · 앞 말 “Can I do it again?”</p>
+          <div class="fld fq"><div class="lbl">아이의 말</div><div class="ln"><span class="caret"></span><span class="ph">이어서 한 말을 적어 주세요</span></div></div>
+          <div class="fld fm"><div class="lbl">여백 메모</div><div class="ln"><span class="ph">어떤 순간이었나요? 나중에 적어도 돼요</span></div></div>
+          <div class="chips"><span class="chip">엄마에게 해준 말</span><span class="chip">놀이하며 만든 말</span><span class="chip">좋아하는 것들</span></div>
+          <div class="acts-bar"><span class="ibo"><svg class="i"><use href="#i-cam"/></svg></span><span class="save">적어 두기</span></div>
+        </div>
+        <div class="kb"></div>
+      </div></div>
+      <figcaption>C2. 빠른 기록이 다시 올라와요. 날짜(정밀도 포함)는 앞 기록에서 이어받고, 머리글 아래 「이어서 적는 중 · 앞 말」. 메모는 앞 말에 없어서 빈 칸, 카테고리는 이어받지 않아요.<span class="taps">탭 0 · 약 22초</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct"><div class="dh" style="margin-top:56px"><div class="d1">10월 13일 화요일</div></div></div>
+        <div class="scrim"></div>
+        <div class="sheet kbup">
+          <span class="grab"></span>
+          <span class="fdate">10월 13일 화요일 · 2세 7개월<svg class="i s"><use href="#i-d"/></svg></span>
+          <p class="cont">이어서 적는 중 · 앞 말 “Can I do it again?”</p>
+          <div class="fld fq"><div class="lbl">아이의 말</div><div class="ln">한 번 더 탈래<span class="caret"></span></div></div>
+          <div class="fld fm"><div class="lbl">여백 메모</div><div class="ln"><span class="ph">어떤 순간이었나요? 나중에 적어도 돼요</span></div></div>
+          <div class="chips"><span class="chip">엄마에게 해준 말</span><span class="chip">놀이하며 만든 말</span><span class="chip">좋아하는 것들</span></div>
+          <div class="acts-bar"><span class="ibo"><svg class="i"><use href="#i-cam"/></svg></span><span class="save tap">적어 두기</span></div>
+        </div>
+        <div class="kb"></div>
+      </div></div>
+      <figcaption>C3. 「한 번 더 탈래」 입력 → 「적어 두기」. 따로 한 기록이라 이 말에만 사진을 붙일 수 있어요.<span class="taps">입력 + 탭 1 · 약 30초</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct">
+          <div class="topbar"><span class="brand">말 일기</span><span class="ibs"><span class="ib"><svg class="i"><use href="#i-search"/></svg></span><span class="ib"><svg class="i"><use href="#i-set"/></svg></span></span></div>
+          <div class="dh"><div class="d1">2026년 10월 13일 화요일</div><div class="d2">아이 · 2세 7개월</div></div>
+          <article class="card"><span class="tape" aria-hidden="true"></span>
+            <div class="card-head"><span class="stamp">2026. 10. 13 화</span><span class="age">방금 적은 말 · 2세 7개월</span></div>
+            <p class="quote big"><span class="open">“</span>한 번 더 탈래</p><span class="lnk">오늘의 말 2개 · 모두 보기</span>
+          </article>
+        </div>
+        <div class="toast"><span>적어 두었어요<br>10월 13일 · 2세 7개월</span><span class="btn ghost">이어서 적기</span></div>
+        <div class="dock"><span class="write"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
+      </div></div>
+      <figcaption>C4. 다시 확인 줄 + 「이어서 적기」 — 더 이어 말하면 또 누르면 돼요.<span class="taps">이어 적는 말 하나당 탭 2번 · 약 10초</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct"><div class="dh" style="margin-top:56px"><div class="d1">10월 5일 월요일</div></div></div>
+        <div class="scrim"></div>
+        <div class="sheet kbup">
+          <span class="grab"></span>
+          <span class="fdate">10월 5일 월요일 · 2세 7개월<svg class="i s"><use href="#i-d"/></svg></span>
+          <p class="cont">이어서 적는 중 · 앞 말 “엄마 이거 봐!”</p>
+          <div class="fld fq"><div class="lbl">아이의 말</div><div class="ln"><span class="caret"></span><span class="ph">이어서 한 말을 적어 주세요</span></div></div>
+          <div class="fld fm"><div class="lbl">여백 메모</div><div class="ln">모래놀이터에서 발자국을 찍으며.</div></div>
+          <div class="chips"><span class="chip">엄마에게 해준 말</span><span class="chip">놀이하며 만든 말</span><span class="chip">좋아하는 것들</span></div>
+          <div class="acts-bar"><span class="ibo"><svg class="i"><use href="#i-cam"/></svg></span><span class="save">적어 두기</span></div>
+        </div>
+        <div class="kb"></div>
+        <span class="annl" style="top:20px;left:16px;right:16px">메모는 이어받은 진짜 값(안내 글씨 아님). 다른 상황이면 지우면 돼요</span>
+      </div></div>
+      <figcaption>C5. 앞 말에 메모가 있었으면 <b>메모도 이어받아</b> 진짜 값의 글씨로 채워져 있어요. 일기장에서는 같은 메모가 한 번만 보여요(<a href="#multi">3.5 일기장 9a</a>).<span class="taps">탭 0</span></figcaption>
+    </figure>
+    <figure class="step">
+      <div class="phone"><div class="screen">
+        <div class="ct"><div class="dh" style="margin-top:56px"><div class="d1">10월 10일 토요일</div></div></div>
+        <div class="scrim"></div>
+        <div class="sheet kbup">
+          <span class="grab"></span>
+          <span class="fdate">10월 10일 토요일 · 2세 7개월<svg class="i s"><use href="#i-d"/></svg></span>
+          <p class="cont">이어서 적는 중 · 앞 말 “아빠 train 타고 가요?”</p>
+          <div class="fld fq"><div class="lbl">아이의 말</div><div class="ln"><span class="caret"></span><span class="ph">이어서 한 말을 적어 주세요</span></div></div>
+          <div class="fld fm"><div class="lbl">여백 메모</div><div class="ln"><span class="ph">어떤 순간이었나요? 나중에 적어도 돼요</span></div></div>
+          <div class="chips"><span class="chip">엄마에게 해준 말</span><span class="chip">놀이하며 만든 말</span><span class="chip">좋아하는 것들</span></div>
+          <div class="acts-bar"><span class="ibo"><svg class="i"><use href="#i-cam"/></svg></span><span class="save">적어 두기</span></div>
+        </div>
+        <div class="kb"></div>
+        <span class="annl" style="top:20px;left:16px;right:16px">지난 날짜로 적던 중이면 그 날짜 그대로 — 오늘로 돌아가지 않아요</span>
+      </div></div>
+      <figcaption>C6. 지난 날짜(R-6a)로 적은 뒤 이어 적으면 머리글이 <b>10월 10일 토요일</b> 그대로. 오늘로 돌아가면 틀린 날짜가 조용히 저장되니까요.<span class="taps">탭 0</span></figcaption>
     </figure>
   </div>
   <div class="crit">
-    <div><b>성공 기준</b><ul><li>아이콘 → 저장 확인 30초 안, 탭 3번 이하(바로 적기 아이콘이면 2번).</li><li>날짜(오늘)·나이·유형(말)은 자동. 시트 <code>entries</code>에 들은 그대로 한 행.</li><li>「적기」와 「적어 두기」 모두 한 손 엄지로 닿는 하단.</li></ul></div>
+    <div><b>성공 기준</b><ul><li>아이콘 → 저장 확인 30초 안, 탭 3번 이하(바로 적기 아이콘이면 2번).</li><li>날짜(오늘)·나이·유형(말)은 자동. 시트 <code>entries</code>에 들은 그대로 한 행.</li><li>「적기」·「적어 두기」·「이어서 적기」 모두 한 손 엄지로 닿는 하단.</li><li>이어서 적는 말 하나당 탭 2번 · 약 10초. 날짜·정밀도·메모는 이어받고 카테고리·유형·사진은 비워요.</li></ul></div>
     <div><b>실패하면</b>쓴 말은 화면에서 먼저 사라지지 않아요. 시트에 적힌 게 확인된 뒤에만 입력란을 비워요. 느림·끊김·로그인 만료 화면은 <a href="#fail">실패·예외 공통</a>에 있어요.</div>
   </div>
 </section>
@@ -860,19 +979,20 @@
           <div class="dh"><div class="d1">2026년 10월 13일 화요일</div><div class="d2">아이 · 2세 7개월</div></div>
           <article class="card"><span class="tape" aria-hidden="true"></span>
             <div class="card-head"><span class="stamp">2026. 10. 13 화</span><span class="age">가장 최근의 말 · 2세 7개월</span></div>
-            <p class="quote big"><span class="open">“</span>엄마 이거 봐!</p><span class="lnk">오늘의 말 2개 · 모두 보기</span>
+            <p class="quote big"><span class="open">“</span>엄마 이거 봐!</p><span class="lnk">오늘의 말 3개 · 모두 보기</span>
           </article>
           <div class="rel"><span class="n">3</span>
-            <h3 class="sec">오늘 채울 것 <small>상황이 비어 있는 말 2개</small></h3>
+            <h3 class="sec">오늘 채울 것 <small>채울 칸이 있는 말 3개</small></h3>
             <div class="rows">
-              <div class="row tap sq"><div class="main"><div class="hq">Can I do it again?</div><div class="sub">상황이 비어 있어요</div></div><svg class="i"><use href="#i-r"/></svg></div>
               <div class="row"><div class="main"><div class="hq">엄마 이거 봐!</div><div class="sub">상황 · 카테고리가 비어 있어요</div></div><svg class="i"><use href="#i-r"/></svg></div>
+              <div class="row tap sq"><div class="main"><div class="hq">Can I do it again?</div><div class="sub">상황이 비어 있어요</div></div><svg class="i"><use href="#i-r"/></svg></div>
+              <div class="row"><div class="main"><div class="hq">물 더 줘</div><div class="sub">카테고리가 비어 있어요</div></div><svg class="i"><use href="#i-r"/></svg></div>
             </div>
           </div>
         </div>
         <div class="dock"><span class="write"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
       </div></div>
-      <figcaption>1. 아이콘 → 대시보드. 「오늘 채울 것」의 첫 말 탭<span class="taps">탭 2 (아이콘, 말)</span></figcaption>
+      <figcaption>1. 아이콘 → 대시보드. 「오늘 채울 것」은 최근 적은 것이 위, 카테고리만 빈 말도 떠요. 「Can I do it again?」 탭<span class="taps">탭 2 (아이콘, 말)</span></figcaption>
     </figure>
     <figure class="step">
       <div class="phone"><div class="screen">
@@ -913,7 +1033,7 @@
             <p class="memo">미끄럼틀을 세 번째 내려오고 나서, 계단 쪽으로 뛰어가며. 「again」 발음이 또렷했다.</p>
             <div class="tags"><span class="cat">놀이하며 만든 말</span><span class="tag">#놀이터</span><span class="tag">#처음 한 문장</span></div>
           </article>
-          <div class="slip calm" style="margin-top:24px"><p>고쳐 두었어요. 다음 말도 채울까요?</p><p class="sub" style="margin-top:4px">엄마 이거 봐! — 상황 · 카테고리가 비어 있어요</p>
+          <div class="slip calm" style="margin-top:24px"><p>고쳐 두었어요. 다음 말도 채울까요?</p><p class="sub" style="margin-top:4px">물 더 줘 — 카테고리가 비어 있어요</p>
             <div class="acts"><span class="btn tap">다음 말 채우기</span><span class="btn quiet">그만할게요</span></div></div>
         </div>
       </div></div>
@@ -1035,7 +1155,7 @@
           <div class="dh"><div class="d1">2026년 10월 13일 화요일</div><div class="d2">아이 · 2세 7개월</div></div>
           <article class="card"><span class="tape" aria-hidden="true"></span>
             <div class="card-head"><span class="stamp">2026. 10. 13 화</span><span class="age">가장 최근의 말 · 2세 7개월</span></div>
-            <p class="quote big"><span class="open">“</span>엄마 이거 봐!</p><span class="lnk">오늘의 말 2개 · 모두 보기</span>
+            <p class="quote big"><span class="open">“</span>엄마 이거 봐!</p><span class="lnk">오늘의 말 3개 · 모두 보기</span>
           </article>
           <div class="rel"><span class="n">3</span>
             <h3 class="sec">오늘 채울 것</h3>
@@ -1215,7 +1335,7 @@
             <ol class="toc-l">
               <li><span class="m">10월</span><span class="a">2세 7개월</span><span class="dots"></span><span class="n2">9</span></li>
               <li><span class="m">9월</span><span class="a">2세 6개월</span><span class="dots"></span><span class="n2">12</span></li>
-              <li class="tap sq"><span class="m">8월</span><span class="a">2세 5개월</span><span class="dots"></span><span class="n2">6</span></li>
+              <li class="tap sq"><span class="m">8월</span><span class="a">2세 5개월</span><span class="dots"></span><span class="n2">9</span></li>
               <li><span class="m">7월</span><span class="a">2세 4개월</span><span class="dots"></span><span class="n2">3</span></li>
               <li><span class="m">뒤쪽 주머니</span><span class="a">날짜 모름</span><span class="dots"></span><span class="n2">8</span></li>
             </ol>
@@ -1231,36 +1351,34 @@
         <div class="ct">
           <div class="topbar"><span class="back"><svg class="i"><use href="#i-l"/></svg>펼침면</span><span class="ib"><svg class="i"><use href="#i-search"/></svg></span></div>
           <div class="chap">8월</div>
-          <p class="sub" style="font-size:15px;margin:0 0 4px">2세 5개월 · 말 6개</p>
-          <div class="grp">8월 어느 날 · 2세 5개월</div>
-          <div class="day"><div class="it"><p class="quote">엄마, 이거 뭐야?</p><p class="memo">날짜는 모르고 8월인 것만 기억나요.</p></div></div>
-          <div class="grp">8월 3일 월요일 · 2세 5개월</div>
-          <div class="day"><div class="it"><p class="quote">물 마셔요, 물!</p><p class="memo">더운 날 공원에서.</p></div></div>
-          <div class="grp">8월 15일 토요일 · 2세 5개월</div>
-          <div class="day"><div class="it"><p class="quote">Big bubble! 엄청 커</p></div></div>
+          <p class="sub" style="font-size:15px;margin:0 0 4px">2세 5개월 · 말 9개</p>
+          <div class="grp">8월 28일 금요일 · 2세 5개월</div>
+          <div class="day"><div class="it"><span class="kind">에피소드</span><p class="act">「작은 별」을 「작은 비행기」로 바꿔 부름</p><div class="ph3"><div class="print"><span class="img book"></span></div><div class="print"><span class="img cake"></span></div><div class="print"><span class="img sky"></span></div></div><span class="ph-more">외 2장</span></div><div class="it"><p class="quote">또 와요</p><p class="memo">할머니 배웅하며.</p></div><div class="it"><span class="kind">행동</span><p class="act">할머니 가방을 문까지 끌어다 드림</p></div><div class="it"><p class="quote">Bye bye 비행기</p><div class="ph3"><div class="print"><span class="img sky"></span></div></div></div></div>
         </div>
         <div class="dock"><span class="write"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
       </div></div>
-      <figcaption>2. 8월 장 — 장 머리에 달·나이·말 수. 날짜를 달까지만 아는 말은 맨 앞 「8월 어느 날」에 모여요. 날짜 머리글은 하루에 한 번, 그 아래 그날의 말이 먼저 적은 순으로(<a href="#multi">3.5</a>).<span class="taps">스크롤</span></figcaption>
+      <figcaption>2. 8월 장 — 장 머리에 달·나이·말 수. <b>최근 날이 위</b>(28일부터), 날짜 머리글은 하루에 한 번, 그 아래 그날의 말이 나중에 적은 것부터(<a href="#multi">3.5</a>).<span class="taps">스크롤</span></figcaption>
     </figure>
     <figure class="step">
       <div class="phone"><div class="screen">
         <div class="ct">
-          <div class="grp" style="margin-top:8px">8월 22일 토요일 · 2세 5개월</div>
-          <div class="day"><div class="it"><p class="quote">아니야, 내 거야</p><p class="memo">놀이터 모래 삽을 두고.</p></div></div>
-          <div class="grp">8월 28일 금요일 · 2세 5개월</div>
-          <div class="day"><div class="it"><p class="quote">Bye bye 비행기</p></div><div class="it"><p class="quote">또 와요</p><p class="memo">할머니 배웅하며.</p></div></div>
-          <div class="pager"><span><svg class="i"><use href="#i-l"/></svg>7월 장</span><span class="tap">9월 장<svg class="i"><use href="#i-r"/></svg></span></div>
+          <div class="grp" style="margin-top:8px">8월 15일 토요일 · 2세 5개월</div>
+          <div class="day"><div class="it"><p class="quote">Big bubble! 엄청 커</p></div></div>
+          <div class="grp">8월 3일 월요일 · 2세 5개월</div>
+          <div class="day"><div class="it"><p class="quote">물 마셔요, 물!</p><p class="memo">더운 날 공원에서.</p></div></div>
+          <div class="grp">8월 어느 날 · 2세 5개월</div>
+          <div class="day"><div class="it"><p class="quote">엄마, 이거 뭐야?</p><p class="memo">날짜는 모르고 8월인 것만 기억나요.</p></div></div>
+          <div class="pager"><span><svg class="i"><use href="#i-l"/></svg>9월로</span><span class="tap">7월로<svg class="i"><use href="#i-r"/></svg></span></div>
         </div>
         <span class="annl mid">장 끝까지 스크롤 ↓</span>
         <div class="dock"><span class="write"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
       </div></div>
-      <figcaption>3. 장 끝의 「← 7월 장 · 9월 장 →」로 한 달씩 넘겨요.<span class="taps">탭 1 · 원하는 달까지 3탭 안</span></figcaption>
+      <figcaption>3. 장 맨 끝에 「8월 어느 날」, 그 아래 달 이름 단추 「← 9월로 · 7월로 →」. 내려 읽던 방향(더 예전)이 오른쪽 「7월로」예요.<span class="taps">탭 1 · 원하는 달까지 3탭 안</span></figcaption>
     </figure>
   </div>
   <div class="crit">
-    <div><b>성공 기준</b>3탭 안에 원하는 달에 닿아요. 장 머리에 「8월 · 2세 5개월 · 말 6개」.</div>
-    <div><b>이렇게 되면</b>말이 없는 달은 「8월은 비어 있어요」 한 줄과 이웃 장 링크만(문구 초안). 3D 페이지 넘김 같은 장식은 쓰지 않아요.</div>
+    <div><b>성공 기준</b>3탭 안에 원하는 달에 닿아요. 장 머리에 「8월 · 2세 5개월 · 말 9개」. 최근 날이 위, 「어느 날」은 장 맨 끝.</div>
+    <div><b>이렇게 되면</b>말이 없는 달은 「8월은 비어 있어요」 한 줄과 이웃 달 단추만(문구 초안). 「지난 장 · 다음 장」 대신 달 이름 — 최근이 위인 목록에서 「다음」이 어느 쪽인지 갈려서. 3D 페이지 넘김 같은 장식은 쓰지 않아요.</div>
   </div>
 </section>
 
@@ -1289,16 +1407,17 @@
         <div class="ct">
           <div class="topbar"><span class="back"><svg class="i"><use href="#i-l"/></svg></span><span class="search"><svg class="i s"><use href="#i-search"/></svg><span class="v">dino<span class="caret"></span></span><svg class="i s"><use href="#i-x"/></svg></span></div>
           <div class="chips"><span class="chip"><svg class="i s"><use href="#i-star"/></svg>책갈피</span><span class="chip">#공룡</span><span class="chip">#기차</span><span class="chip">영어가 섞인 말</span></div>
-          <p class="sub" style="margin:12px 0 8px">dino — 3개 · 오래된 날부터</p>
+          <p class="sub" style="margin:12px 0 8px">dino · 말 4개 · 2026년 6월부터</p>
           <div class="rows">
-            <div class="row tap sq"><span class="rd">06. 20 토</span><div class="main"><div class="hq"><mark>Dino</mark>saur 와요!</div></div></div>
+            <div class="row"><span class="rd">09. 27 일</span><div class="main"><div class="hq"><mark>Dino</mark> 책 또 읽어</div></div></div>
+            <div class="row"><span class="rd">09. 12 토</span><div class="main"><div class="hq"><mark>Dino</mark>saur 자요?</div></div></div>
             <div class="row"><span class="rd">08. 15 토</span><div class="main"><div class="hq">공룡 봐</div><div class="sub">여백: 그림책 「<mark>dino</mark> 친구들」을 보며</div></div></div>
-            <div class="row"><span class="rd">10. 05 월</span><div class="main"><div class="hq">엄마 이거 봐! <mark>dino</mark>saur 발자국이야</div></div></div>
+            <div class="row tap sq"><span class="rd">06. 20 토</span><div class="main"><div class="hq"><mark>Dino</mark>saur 와요!</div></div></div>
           </div>
         </div>
         <div class="kb"></div>
       </div></div>
-      <figcaption>2. <code>dino</code> 입력 → 일치한 글자를 표시한 결과. 대소문자는 가리지 않아요(Q-T5). 결과 하나를 누르면 그 장.<span class="taps">입력 + 탭 1 · 누적 2</span></figcaption>
+      <figcaption>2. <code>dino</code> 입력 → 결과는 <b>최근이 위</b>, 일치한 글자 표시. 「처음 언제」는 맨 위 한 줄 「2026년 6월부터」로 알고, 맨 아래 결과가 처음 기록. 대소문자는 가리지 않아요(Q-T5). 결과 하나를 누르면 그 장.<span class="taps">입력 + 탭 1 · 누적 2</span></figcaption>
     </figure>
     <figure class="step">
       <div class="phone"><div class="screen">
@@ -1307,11 +1426,11 @@
           <div class="chips"><span class="chip"><svg class="i s"><use href="#i-star"/></svg>책갈피</span><span class="chip on tap"><svg class="i s"><use href="#i-check"/></svg>#공룡</span><span class="chip">#기차</span><span class="chip">영어가 섞인 말</span></div>
           <p class="sentence" style="margin:12px 0 8px">공룡 · 말 9개 · 2026년 6월부터</p>
           <div class="rows">
-            <div class="row"><span class="rd">06. 20 토</span><div class="main"><div class="hq">Dinosaur 와요!</div></div></div>
-            <div class="row"><span class="rd">07. 04 토</span><div class="main"><div class="hq">크앙 크앙 놀이</div></div></div>
-            <div class="row"><span class="rd">08. 15 토</span><div class="main"><div class="hq">공룡 봐</div></div></div>
+            <div class="row"><span class="rd">10. 05 월</span><div class="main"><div class="hq">공룡 발자국이야</div></div></div>
             <div class="row"><span class="rd">09. 06 일</span><div class="main"><div class="hq">공룡 알 깨졌어</div></div></div>
-            <div class="row"><span class="rd">10. 05 월</span><div class="main"><div class="hq">엄마 이거 봐! dinosaur 발자국이야</div></div></div>
+            <div class="row"><span class="rd">08. 15 토</span><div class="main"><div class="hq">공룡 봐</div></div></div>
+            <div class="row"><span class="rd">07. 04 토</span><div class="main"><div class="hq">크앙 크앙 놀이</div></div></div>
+            <div class="row"><span class="rd">06. 20 토</span><div class="main"><div class="hq">Dinosaur 와요!</div></div></div>
           </div>
         </div>
         <div class="dock"><span class="write"><svg class="i"><use href="#i-pen"/></svg>적기</span></div>
@@ -1342,7 +1461,7 @@
 <!-- ======================= V-4 ======================= -->
 <section class="sc" id="v4" aria-labelledby="v4-h">
   <h2 id="v4-h"><span class="pill">V-4</span>한 장 자세히 보기 · 고치기 · 지우기</h2>
-  <p class="sit">어디서든 말 하나를 누르면 그 장이 열려요. 사진은 크게, 좌우로 넘기고, 이웃 말은 아래 「이전 말 · 다음 말」로 — 들어온 목록의 순서대로 넘겨요. 지우기는 그 말 하나만, 소프트 삭제라 언제든 되살릴 수 있어요.</p>
+  <p class="sit">어디서든 말 하나를 누르면 그 장이 열려요. 사진은 크게, 좌우로 넘기고, 이웃 말은 아래 「더 최근 말 · 더 예전 말」로 — 들어온 목록의 순서대로 넘겨요. 지우기는 그 말 하나만, 소프트 삭제라 언제든 되살릴 수 있어요.</p>
   <p class="swipe" aria-hidden="true">옆으로 밀어 보세요 →</p>
   <div class="strip" tabindex="0" role="region" aria-label="V-4 목업 3장, 옆으로 넘겨 보기">
     <figure class="step">
@@ -1354,7 +1473,7 @@
           <p class="quote big"><span class="open">“</span>Can I do it again?</p>
           <p class="memo">미끄럼틀을 세 번째 내려오고 나서, 계단 쪽으로 뛰어가며. 「again」 발음이 또렷했다.</p>
           <div class="tags"><span class="cat">놀이하며 만든 말</span><span class="tag">#놀이터</span><span class="tag">#처음 한 문장</span></div>
-          <div class="pager" style="position:absolute;left:16px;right:16px;bottom:46px"><span><svg class="i"><use href="#i-l"/></svg>이전 말</span><span>다음 말<svg class="i"><use href="#i-r"/></svg></span></div>
+          <div class="pager" style="position:absolute;left:16px;right:16px;bottom:46px"><span><svg class="i"><use href="#i-l"/></svg>더 최근 말</span><span>더 예전 말<svg class="i"><use href="#i-r"/></svg></span></div>
         </div>
         <span class="annl" style="top:250px;left:16px">사진은 좌우로 넘김</span>
       </div></div>
@@ -1484,7 +1603,7 @@
             <li><span class="thumb img park" style="filter:hue-rotate(30deg)"></span><span class="nm">2026-10-13_143005_02.jpg</span></li>
           </ul>
         </div>
-        <span class="annl" style="top:420px;left:16px;right:16px">파일 이름이 촬영 시각이라 이름순 = 시간순. HEIC 원본도 바꾸지 않고 그대로 — 포토프린터가 HEIC를 못 읽으면? (질문)</span>
+        <span class="annl" style="top:420px;left:16px;right:16px">파일 이름이 촬영 시각이라 이름순 = 시간순. HEIC 원본 그대로 뽑아요(포토프린터가 읽음)</span>
       </div></div>
       <figcaption>6. (Drive) 월 폴더 — 원본 파일이 <code>YYYY-MM-DD_HHMMSS_NN</code> 이름으로. 이 순서대로 뽑으면 돼요.<span class="taps">앱 밖</span></figcaption>
     </figure>
@@ -1492,13 +1611,13 @@
       <div class="phone"><div class="screen os">
         <div class="ct" style="padding:0"><div class="drive-h"><div class="path">Google 문서</div><div class="t">2026 캡션</div></div></div>
         <div class="doc">
-          <div class="nt">사진 원본은 gallery 폴더에 있어요. .web 폴더는 앱용 작은 사본이라 뽑지 않아도 돼요.</div>
-          <div class="it"><span class="thumb img sand"></span><div><div class="fn">2026-10-05_153010_01.jpg</div>10월 5일 월요일 · 2세 7개월<div class="w">엄마 이거 봐! dinosaur 발자국이야</div>모래에 발로 꾹꾹 찍어 놓고.</div></div>
+          <div class="nt">1월부터 날짜순이에요(책은 1월부터 넘기니까 — 앱 안과 반대). 사진 원본은 gallery 폴더에 있어요. .web 폴더는 앱용 작은 사본이라 뽑지 않아도 돼요.</div>
+          <div class="it"><span class="thumb img sand"></span><div><div class="fn">2026-10-05_153010_01.jpg</div>10월 5일 월요일 · 2세 7개월<div class="w">엄마 이거 봐!</div>모래놀이터에서 발자국을 찍으며.</div></div>
           <div class="it"><span class="thumb img park"></span><div><div class="fn">2026-10-13_143005_01.jpg</div>10월 13일 화요일 · 2세 7개월<div class="w">Can I do it again?</div></div></div>
           <div class="it"><span class="thumb img cake"></span><div><div class="fn">2026-11-02_190211_01.jpg</div><span class="flag">언제인지 몰라요 · 앱에 올린 날 기준으로 이 폴더에 있어요</span><div class="w">생일 축하해 me!</div></div></div>
         </div>
       </div></div>
-      <figcaption>7. (Google 문서) 캡션 — 날짜순, 썸네일·파일명·날짜·나이·말·상황. 첫 줄 안내와 날짜 모르는 사진 표시는 제안 C-8.<span class="taps">앱 밖</span></figcaption>
+      <figcaption>7. (Google 문서) 캡션 — <b>1월부터</b> 날짜순(앱 안의 「위 = 더 최근」의 유일한 예외), 썸네일·파일명·날짜·나이·말·상황. 첫 줄 안내와 날짜 모르는 사진 표시는 제안 C-8.<span class="taps">앱 밖</span></figcaption>
     </figure>
   </div>
   <div class="crit">
@@ -1517,6 +1636,7 @@
       <div class="phone"><div class="screen">
         <div class="ct"><div class="dh" style="margin-top:56px"><div class="d1">2026년 10월 13일 화요일</div></div></div>
         <div class="scrim"></div>
+        <span class="annl" style="top:64px;left:16px;right:16px">「이어서 적기」 단추가 없는 게 맞아요 — 저장이 확인되기 전엔 뜨지 않아요. 그 사이 이어 한 말은 같은 칸에 줄을 바꿔</span>
         <div class="sheet lo">
           <span class="grab"></span>
           <span class="fdate">10월 13일 화요일 · 2세 7개월<svg class="i s"><use href="#i-d"/></svg></span>
@@ -1531,6 +1651,7 @@
       <div class="phone"><div class="screen">
         <div class="ct"><div class="dh" style="margin-top:56px"><div class="d1">2026년 10월 13일 화요일</div></div></div>
         <div class="scrim"></div>
+        <span class="annl" style="top:64px;left:16px;right:16px">「이어서 적기」 단추가 없는 게 맞아요 — 저장이 확인되기 전엔 뜨지 않아요. 그 사이 이어 한 말은 같은 칸에 줄을 바꿔</span>
         <div class="sheet" style="top:248px">
           <span class="grab"></span>
           <span class="fdate">10월 13일 화요일 · 2세 7개월<svg class="i s"><use href="#i-d"/></svg></span>
@@ -1545,6 +1666,7 @@
       <div class="phone"><div class="screen">
         <div class="ct"><div class="dh" style="margin-top:56px"><div class="d1">2026년 10월 13일 화요일</div></div></div>
         <div class="scrim"></div>
+        <span class="annl" style="top:64px;left:16px;right:16px">「이어서 적기」 단추가 없는 게 맞아요 — 저장이 확인되기 전엔 뜨지 않아요. 그 사이 이어 한 말은 같은 칸에 줄을 바꿔</span>
         <div class="sheet" style="top:248px">
           <span class="grab"></span>
           <span class="fdate">10월 13일 화요일 · 2세 7개월<svg class="i s"><use href="#i-d"/></svg></span>
@@ -1602,8 +1724,8 @@
 
 <!-- ======================= 넓은 화면 ======================= -->
 <section class="sc" id="wide" aria-labelledby="wide-h">
-  <h2 id="wide-h"><span class="pill">3.4</span>넓은 화면 — 대시보드 펼침면</h2>
-  <p class="sit">노트북·태블릿에서는 일기장을 두 쪽으로 펼쳐요. 왼쪽 쪽은 오늘·최근의 말·이번 달(①②④), 오른쪽 쪽은 채울 것·사진·이맘때·요즘·책갈피(③⑤⑥⑦⑧), 목차(⑨)는 책 옆 인덱스 탭. 넓어진 자리는 숫자가 아니라 말과 사진을 더 보여 주는 데 써요. 주로 쓰실지는 Q1이에요.</p>
+  <h2 id="wide-h"><span class="pill">3.4</span>넓은 화면 — 대시보드 펼침면 (P2)</h2>
+  <p class="sit">노트북·태블릿에서는 일기장을 두 쪽으로 펼쳐요. 왼쪽 쪽은 오늘·최근의 말·이번 달(①②④), 오른쪽 쪽은 채울 것·사진·이맘때·요즘·책갈피(③⑤⑥⑦⑧), 목차(⑨)는 책 옆 인덱스 탭. 넓어진 자리는 숫자가 아니라 말과 사진을 더 보여 주는 데 써요. 주로 폰으로 보신다는 답(Q1)에 따라 <b>P2</b> — 나중 일이에요. ③ 문구만 새 규칙에 맞췄어요.</p>
   <p class="swipe" aria-hidden="true">옆으로 밀어 보세요 →</p>
   <div class="wide-wrap" tabindex="0" role="region" aria-label="넓은 화면 목업, 옆으로 밀어 보기">
     <div class="laptop"><div class="wscreen">
@@ -1617,18 +1739,18 @@
           </div>
           <div class="rel"><span class="n l">4</span>
             <h3 class="sec">10월 <small>말 9개를 적었어요 · 10월 장 펼치기</small></h3>
-            <div class="row"><span class="rd">10. 13 화</span><div class="main hq-l"><div class="hq">엄마 이거 봐!</div><span class="xn">외 2개</span></div></div>
+            <div class="row"><span class="rd">10. 13 화</span><div class="main hq-l"><div class="hq">Moon이 따라와</div><span class="xn">외 2개</span></div></div>
             <div class="row"><span class="rd">10. 12 월</span><div class="main hq-l"><div class="hq">Look, 비 와요</div></div></div>
             <div class="row"><span class="rd">10. 11 일</span><div class="main hq-l"><div class="hq">아빠 train 타고 가요?</div></div></div>
-            <div class="row"><span class="rd">10. 05 월</span><div class="main hq-l"><div class="hq">엄마 이거 봐! …</div></div></div>
-            <div class="row"><span class="rd">10. 03 토</span><div class="main"><div class="hq">한 번 더!</div></div></div>
+            <div class="row"><span class="rd">10. 05 월</span><div class="main hq-l"><div class="hq">크앙!</div><span class="xn">외 2개</span></div></div>
+            <div class="row"><span class="rd">10. 03 토</span><div class="main"><div class="hq">한 번 더! …</div></div></div>
           </div>
         </div>
         <div class="pg">
           <div class="rel"><span class="n">3</span>
-            <h3 class="sec" style="margin-top:0">오늘 채울 것 <small>상황이 비어 있는 말 2개</small></h3>
-            <div class="row"><div class="main"><div class="hq">엄마 이거 봐!</div></div><svg class="i"><use href="#i-r"/></svg></div>
+            <h3 class="sec" style="margin-top:0">오늘 채울 것 <small>채울 칸이 있는 말 2개</small></h3>
             <div class="row"><div class="main"><div class="hq">Moon이 따라와</div></div><svg class="i"><use href="#i-r"/></svg></div>
+            <div class="row"><div class="main"><div class="hq">엄마 이거 봐!</div></div><svg class="i"><use href="#i-r"/></svg></div>
           </div>
           <div class="rel"><span class="n">5</span>
             <h3 class="sec">사진이 있는 순간</h3>
@@ -1656,9 +1778,9 @@
   <h2 id="q-h"><span class="pill">8.1</span>여쭤볼 것 — 목업에 비추어</h2>
   <p class="sit">목업은 아래 질문마다 한쪽을 골라 그려 둔 것이에요. 다르게 원하시면 그 부분만 바뀌어요.</p>
   <ol class="qs">
-    <li><b>Q1</b><span class="q">대시보드는 주로 폰과 노트북 중 어디서 보실 것 같나요? 연말 포토북은 노트북에서 하시나요?</span><span class="m">목업: 폰이 기본, 넓은 화면은 펼침면 한 장만 그렸어요(<a href="#wide">3.4</a>). 포토북(V-6)도 폰으로 그렸어요.</span></li>
+    <li><b>Q1</b><span class="q">대시보드는 주로 폰과 노트북 중 어디서 보실 것 같나요? 연말 포토북은 노트북에서 하시나요?</span><span class="m"><span class="ans">✓ 답</span> 주로 폰으로 봐요. 넓은 화면은 P2.</span></li>
     <li><b>Q2</b><span class="q">홈 화면에 아이콘을 두 개(「말 일기」 + 「바로 적기」) 두는 건 괜찮으세요?</span><span class="m">목업: <a href="#r1">R-1 첫 화면</a>에 점선 「바로 적기」로 표시. 하나만이면 R-1은 탭 3번 + 대시보드 로딩.</span></li>
-    <li><b>Q3</b><span class="q">놀이터에서는 카테고리를 안 고르고 저장해도 될까요?</span><span class="m">목업: 빠른 기록의 칩은 고르지 않아도 「적어 두기」가 눌려요. 비우면 저녁에 「오늘 채울 것」에 떠요(R-3).</span></li>
+    <li><b>Q3</b><span class="q">놀이터에서는 카테고리를 안 고르고 저장해도 될까요?</span><span class="m"><span class="ans">✓ 답</span> 네 — 카테고리는 빠른 기록에서 선택 사항. 비우면 저녁에 「오늘 채울 것」에 떠요(<a href="#r3">R-3</a>).</span></li>
     <li><b>Q4</b><span class="q">「오늘 채울 것」이 도움이 될까요, 숙제처럼 느껴질까요?</span><span class="m">목업: 펼친 채로 첫 화면(③)에 두었어요. 숙제 같으면 한 줄 요약으로 접을 수 있어요.</span></li>
     <li><b>Q5</b><span class="q">「1년 전 오늘」이 생기기 전까지 「한 달 전 이맘때」를 대신 보여 드려도 될까요?</span><span class="m">목업: <a href="#v1">V-1 네 번째 화면</a> ⑥이 「한 달 전 이맘때 · 9월 13일」.</span></li>
     <li><b>Q6</b><span class="q">달만 아는 기록의 나이는 어떻게 적을까요? (범위 / 1일 기준 / 비우기)</span><span class="m">목업: 일단 「2026년 10월 어느 날 · 2세 7개월」 한 값으로 그렸어요(<a href="#r6">R-6b</a>).</span></li>
@@ -1666,9 +1788,10 @@
     <li><b>Q8</b><span class="q">성장 그래프를 원하세요, 「처음 다섯 단어 넘는 문장을 한 날」 같은 이정표 한 줄이 나을까요?</span><span class="m">목업: 그래프는 어디에도 없어요. 숫자는 「말 7개를 적었어요」 수준만.</span></li>
     <li><b>Q9</b><span class="q">날짜 모르는 예전 기록을 일기장 맨 뒤 「뒤쪽 주머니」에 모아 두는 방식, 괜찮으세요?</span><span class="m">목업: <a href="#r6">R-6b 두 번째 화면</a>이 그 모습이에요.</span></li>
     <li><b>Q10</b><span class="q">「책갈피」「뒤쪽 주머니」「적어 두기」「고쳐 두기」 같은 일기장 말투 이름이 좋으세요, 「즐겨찾기」「저장」처럼 익숙한 이름이 좋으세요?</span><span class="m">목업: 일기장 말투로 그렸어요. 바꾸면 버튼 글자만 바뀌어요.</span></li>
-    <li><b>Q11</b><span class="q">일기장 한 달 장은 1일부터 아래로, 하루 안에서는 먼저 적은 말이 위로 읽히게 할까요(추천 — 종이 일기처럼 아침→저녁)? 아니면 가장 최근이 맨 위가 좋으세요?</span><span class="m">목업: 1일부터 · 먼저 적은 말이 위(<a href="#multi">3.5 일기장 화면</a>). 대시보드 ④는 어느 쪽이든 최근 날이 위.</span></li>
-    <li><b>Q12</b><span class="q">같은 날 말 옆에 적은 시각(예: 오후 9:40)은 안 보여 드릴 생각이에요(추천). 저녁에 몰아 적으면 말한 시각과 달라서요. 괜찮으세요?</span><span class="m">목업: 시각은 어디에도 없어요. 시각이 중요하면 여백 메모에 「아침 먹다가」처럼.</span></li>
-    <li><b>Q13</b><span class="q">한 장면에서 연달아 한 말은 한 기록에 줄을 바꿔 적을까요(추천 — 저장 한 번)? 저장 직후 「이어서 적기」 버튼이 있으면 쓰실 것 같으세요?</span><span class="m">목업: 줄바꿈 한 기록(<a href="#multi">3.5 일기장 9번째</a>)과 말 칸 안내 둘째 줄(3.5 마지막). 「이어서 적기」 버튼은 그리지 않았어요(기능 추가라 답을 듣고 나서).</span></li>
+    <li><b>Q11</b><span class="q">일기장 한 달 장은 1일부터 아래로, 하루 안에서는 먼저 적은 말이 위로 읽히게 할까요(추천 — 종이 일기처럼 아침→저녁)? 아니면 가장 최근이 맨 위가 좋으세요?</span><span class="m"><span class="ans">✓ 답</span> 최근 말이 위 — 날짜 사이도, 하루 안도. 모든 목업을 「위 = 더 최근」으로 고쳤어요.</span></li>
+    <li><b>Q12</b><span class="q">같은 날 말 옆에 적은 시각(예: 오후 9:40)은 안 보여 드릴 생각이에요(추천). 저녁에 몰아 적으면 말한 시각과 달라서요. 괜찮으세요?</span><span class="m"><span class="ans">✓ 답</span> 적은 시각은 숨겨요. 목업 어디에도 없어요.</span></li>
+    <li><b>Q13</b><span class="q">한 장면에서 연달아 한 말은 한 기록에 줄을 바꿔 적을까요(추천 — 저장 한 번)? 저장 직후 「이어서 적기」 버튼이 있으면 쓰실 것 같으세요?</span><span class="m"><span class="ans">✓ 답</span> 말마다 따로 — 저장 직후 「이어서 적기」(말마다 사진을 붙이려고). <a href="#r1">R-1 흐름 C</a>.</span></li>
+    <li><b>Q14</b><span class="q">「이어서 적기」로 나눠 적은 한 장면(엄마 이거 봐! → 공룡 발자국이야 → 크앙!)이 일기장에서는 「나중 것이 위」 규칙 때문에 크앙!부터 거꾸로 읽혀요. 이대로 둘까요(추천 — 어디서나 「위 = 더 최근」 한 규칙, 시트도 그대로)? 이어 적은 말끼리만 묶어 그 안에서는 적은 순으로 보이게 할까요?</span><span class="m">목업: 거꾸로 읽히는 그대로(<a href="#multi">3.5 일기장 9a</a>). 묶으려면 기록끼리 잇는 칸이 시트에 새로 필요해요(스키마 변경).</span></li>
   </ol>
 </section>
 </main>
